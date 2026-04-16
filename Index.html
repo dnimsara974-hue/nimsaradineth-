@@ -1,2 +1,1325 @@
-# nimsaradineth-
-Trdfg
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Academy - ශ්‍රී ලාංකික අධ්‍යාපන මධ්‍යස්ථානය</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Sinhala', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: "🎓";
+            -webkit-text-fill-color: initial;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #667eea;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 4rem 0;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s backwards;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 2rem auto;
+            position: relative;
+            animation: fadeInUp 1s ease 0.4s backwards;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            outline: none;
+        }
+
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .search-box button:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        /* Main Content */
+        .main-content {
+            background: white;
+            border-radius: 30px 30px 0 0;
+            padding: 3rem 0;
+            min-height: 100vh;
+        }
+
+        /* Grade Section */
+        .grade-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        /* Grade Cards */
+        .grade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .grade-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid #f0f0f0;
+        }
+
+        .grade-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .grade-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .grade-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .grade-title {
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        .grade-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Subject Buttons */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .subject-btn {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subject-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            color: #667eea;
+            transform: scale(1.02);
+        }
+
+        .subject-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* Content Area */
+        .content-area {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.6rem 1.5rem;
+            border: none;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: #764ba2;
+            color: white;
+        }
+
+        /* Notes Section */
+        .notes-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .note-item {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .note-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .note-info h4 {
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .note-info p {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Papers Section */
+        .papers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .paper-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .paper-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .year-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .paper-type {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Quick Access */
+        .quick-access {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+            border-radius: 30px 30px 0 0;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .quick-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .quick-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .quick-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 3rem 0 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #cbd5e0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .copyright {
+            border-top: 1px solid #4a5568;
+            padding-top: 2rem;
+            color: #a0aec0;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .grade-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: scaleIn 0.3s;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-modal {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #667eea;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Nova Academy</div>
+                <ul class="nav-links">
+                    <li><a href="#home">මුල් පිටුව</a></li>
+                    <li><a href="#grades">ශ්‍රේණි</a></li>
+                    <li><a href="#papers">ප්‍රශ්න පත්‍ර</a></li>
+                    <li><a href="#notes">සටහන්</a></li>
+                    <li><a href="#contact">සම්බන්ධතා</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>ඔබේ අධ්‍යාපන ගමනට නව මග</h1>
+            <p>6-11 ශ්‍රේණි සියලුම විෂයයන් සඳහා කෙටි සටහන් සහ පසුගිය වසරවල ප්‍රශ්න පත්‍ර</p>
+            
+            <div class="search-box">
+                <input type="text" placeholder="විෂයය හෝ ශ්‍රේණිය සොයන්න..." id="searchInput">
+                <button onclick="searchContent()">සොයන්න</button>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">ශ්‍රේණි</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">විෂයයන්</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">සටහන්</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">ප්‍රශ්න පත්‍ර</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content" id="grades">
+        <div class="container">
+            
+            <!-- Grade 6 -->
+            <div class="grade-section">
+                <h2 class="section-title">6 ශ්‍රේණිය</h2>
+                <div class="grade-grid">
+                    <div class="grade-card">
+                        <div class="grade-header">
+                            <div class="grade-icon">📚</div>
+                            <div>
+                                <h3 class="grade-title">6 ශ්‍රේණිය</h3>
+                                <p class="grade-subtitle">ප්‍රාථමික අධ්‍යාපනය</p>
+                            </div>
+                        </div>
+                        
+                        <div class="subjects-grid">
+                            <button class="subject-btn active" onclick="selectSubject(this, '6', 'sinhala')">🇱🇰 සිංහල</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '6', 'maths')">🔢 ගණිතය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '6', 'science')">🔬 විද්‍යාව</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '6', 'english')">🇬🇧 ඉංග්‍රීසි</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '6', 'history')">🏛️ ඉතිහාසය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '6', 'geography')">🌍 භූගෝලය</button>
+                        </div>
+
+                        <div class="content-area" id="content-6">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" onclick="switchTab(this, 'notes')">කෙටි සටහන්</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'papers')">ප්‍රශ්න පත්‍ර</button>
+                            </div>
+                            
+                            <div id="notes-6" class="tab-content">
+                                <div class="notes-list">
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>පාඩම් 1-5 සාරාංශය</h4>
+                                            <p>PDF | 2.5 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('6-sinhala-notes-1')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>විභාග සඳහා කෙටි සටහන්</h4>
+                                            <p>PDF | 1.8 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('6-sinhala-notes-2')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>වචන සම්භවය සටහන්</h4>
+                                            <p>PDF | 1.2 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('6-sinhala-notes-3')">📥 බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="papers-6" class="tab-content" style="display:none;">
+                                <div class="papers-grid">
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('6-paper-2023-1st')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">දෙවන වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('6-paper-2023-2nd')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2022</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('6-paper-2022-1st')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2022</span>
+                                        <p class="paper-type">දෙවන වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('6-paper-2022-2nd')">බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats Card -->
+                    <div class="grade-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <div class="grade-header" style="border-bottom-color: rgba(255,255,255,0.3);">
+                            <div class="grade-icon" style="background: rgba(255,255,255,0.2);">📊</div>
+                            <div>
+                                <h3 class="grade-title" style="color: white;">6 ශ්‍රේණිය තොරතුරු</h3>
+                                <p class="grade-subtitle" style="color: rgba(255,255,255,0.8);">විෂය මාලාව සාරාංශය</p>
+                            </div>
+                        </div>
+                        <div style="color: white;">
+                            <p style="margin-bottom: 1rem;">✅ සිංහල භාෂාව සහ සාහිත්‍යය</p>
+                            <p style="margin-bottom: 1rem;">✅ බුද්ධාගම (අනුකම්පාව)</p>
+                            <p style="margin-bottom: 1rem;">✅ ගණිතය</p>
+                            <p style="margin-bottom: 1rem;">✅ විද්‍යාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ඉංග්‍රීසි භාෂාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ඉතිහාසය</p>
+                            <p style="margin-bottom: 1rem;">✅ භූගෝල විද්‍යාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ප්‍රායෝගික තාක්ෂණවේදය</p>
+                            <p style="margin-bottom: 1rem;">✅ සිතුවම්</p>
+                            <p style="margin-bottom: 1rem;">✅ සංගීතය</p>
+                            <p style="margin-bottom: 1rem;">✅ නාට්‍ය හා රංගන කලාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ශාරීරික අධ්‍යාපනය</p>
+                            <p style="margin-bottom: 1rem;">✅ සෞඛ්‍ය හා ශාරීරික අධ්‍යාපනය</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grade 7 -->
+            <div class="grade-section">
+                <h2 class="section-title">7 ශ්‍රේණිය</h2>
+                <div class="grade-grid">
+                    <div class="grade-card">
+                        <div class="grade-header">
+                            <div class="grade-icon">📝</div>
+                            <div>
+                                <h3 class="grade-title">7 ශ්‍රේණිය</h3>
+                                <p class="grade-subtitle">ප්‍රාථමික අධ්‍යාපනය</p>
+                            </div>
+                        </div>
+                        
+                        <div class="subjects-grid">
+                            <button class="subject-btn active" onclick="selectSubject(this, '7', 'sinhala')">🇱🇰 සිංහල</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '7', 'maths')">🔢 ගණිතය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '7', 'science')">🔬 විද්‍යාව</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '7', 'english')">🇬🇧 ඉංග්‍රීසි</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '7', 'history')">🏛️ ඉතිහාසය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '7', 'geography')">🌍 භූගෝලය</button>
+                        </div>
+
+                        <div class="content-area" id="content-7">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" onclick="switchTab(this, 'notes')">කෙටි සටහන්</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'papers')">ප්‍රශ්න පත්‍ර</button>
+                            </div>
+                            
+                            <div id="notes-7" class="tab-content">
+                                <div class="notes-list">
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>වාක්‍ය වර්ග සටහන්</h4>
+                                            <p>PDF | 2.1 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('7-sinhala-notes-1')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>සන්ධි සහ විග්‍රහ සටහන්</h4>
+                                            <p>PDF | 1.9 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('7-sinhala-notes-2')">📥 බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="papers-7" class="tab-content" style="display:none;">
+                                <div class="papers-grid">
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('7-paper-2023-1st')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">දෙවන වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('7-paper-2023-2nd')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2022</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('7-paper-2022-1st')">බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grade-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                        <div class="grade-header" style="border-bottom-color: rgba(255,255,255,0.3);">
+                            <div class="grade-icon" style="background: rgba(255,255,255,0.2);">🎯</div>
+                            <div>
+                                <h3 class="grade-title" style="color: white;">7 ශ්‍රේණිය තොරතුරු</h3>
+                                <p class="grade-subtitle" style="color: rgba(255,255,255,0.8);">විෂය මාලාව සාරාංශය</p>
+                            </div>
+                        </div>
+                        <div style="color: white;">
+                            <p style="margin-bottom: 1rem;">✅ සිංහල භාෂාව සහ සාහිත්‍යය</p>
+                            <p style="margin-bottom: 1rem;">✅ බුද්ධාගම (අනුකම්පාව)</p>
+                            <p style="margin-bottom: 1rem;">✅ ගණිතය</p>
+                            <p style="margin-bottom: 1rem;">✅ විද්‍යාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ඉංග්‍රීසි භාෂාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ඉතිහාසය</p>
+                            <p style="margin-bottom: 1rem;">✅ භූගෝල විද්‍යාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ප්‍රායෝගික තාක්ෂණවේදය</p>
+                            <p style="margin-bottom: 1rem;">✅ සිතුවම්</p>
+                            <p style="margin-bottom: 1rem;">✅ සංගීතය</p>
+                            <p style="margin-bottom: 1rem;">✅ නාට්‍ය හා රංගන කලාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ශාරීරික අධ්‍යාපනය</p>
+                            <p style="margin-bottom: 1rem;">✅ සෞඛ්‍ය හා ශාරීරික අධ්‍යාපනය</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grade 8 -->
+            <div class="grade-section">
+                <h2 class="section-title">8 ශ්‍රේණිය</h2>
+                <div class="grade-grid">
+                    <div class="grade-card">
+                        <div class="grade-header">
+                            <div class="grade-icon">🎓</div>
+                            <div>
+                                <h3 class="grade-title">8 ශ්‍රේණිය</h3>
+                                <p class="grade-subtitle">ද්විතීයික අධ්‍යාපනය</p>
+                            </div>
+                        </div>
+                        
+                        <div class="subjects-grid">
+                            <button class="subject-btn active" onclick="selectSubject(this, '8', 'sinhala')">🇱🇰 සිංහල</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '8', 'maths')">🔢 ගණිතය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '8', 'science')">🔬 විද්‍යාව</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '8', 'english')">🇬🇧 ඉංග්‍රීසි</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '8', 'history')">🏛️ ඉතිහාසය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '8', 'geography')">🌍 භූගෝලය</button>
+                        </div>
+
+                        <div class="content-area" id="content-8">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" onclick="switchTab(this, 'notes')">කෙටි සටහන්</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'papers')">ප්‍රශ්න පත්‍ර</button>
+                            </div>
+                            
+                            <div id="notes-8" class="tab-content">
+                                <div class="notes-list">
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>අලංකාර ශාස්ත්‍රය සටහන්</h4>
+                                            <p>PDF | 2.8 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('8-sinhala-notes-1')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>සන්ධි සහ විග්‍රහ සටහන්</h4>
+                                            <p>PDF | 2.3 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('8-sinhala-notes-2')">📥 බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="papers-8" class="tab-content" style="display:none;">
+                                <div class="papers-grid">
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('8-paper-2023-1st')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">දෙවන වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('8-paper-2023-2nd')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2022</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('8-paper-2022-1st')">බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grade-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                        <div class="grade-header" style="border-bottom-color: rgba(255,255,255,0.3);">
+                            <div class="grade-icon" style="background: rgba(255,255,255,0.2);">💡</div>
+                            <div>
+                                <h3 class="grade-title" style="color: white;">8 ශ්‍රේණිය තොරතුරු</h3>
+                                <p class="grade-subtitle" style="color: rgba(255,255,255,0.8);">විෂය මාලාව සාරාංශය</p>
+                            </div>
+                        </div>
+                        <div style="color: white;">
+                            <p style="margin-bottom: 1rem;">✅ සිංහල භාෂාව සහ සාහිත්‍යය</p>
+                            <p style="margin-bottom: 1rem;">✅ බුද්ධාගම (අනුකම්පාව)</p>
+                            <p style="margin-bottom: 1rem;">✅ ගණිතය</p>
+                            <p style="margin-bottom: 1rem;">✅ විද්‍යාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ඉංග්‍රීසි භාෂාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ඉතිහාසය</p>
+                            <p style="margin-bottom: 1rem;">✅ භූගෝල විද්‍යාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ප්‍රායෝගික තාක්ෂණවේදය</p>
+                            <p style="margin-bottom: 1rem;">✅ සිතුවම්</p>
+                            <p style="margin-bottom: 1rem;">✅ සංගීතය</p>
+                            <p style="margin-bottom: 1rem;">✅ නාට්‍ය හා රංගන කලාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ශාරීරික අධ්‍යාපනය</p>
+                            <p style="margin-bottom: 1rem;">✅ සෞඛ්‍ය හා ශාරීරික අධ්‍යාපනය</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grade 9 -->
+            <div class="grade-section">
+                <h2 class="section-title">9 ශ්‍රේණිය</h2>
+                <div class="grade-grid">
+                    <div class="grade-card">
+                        <div class="grade-header">
+                            <div class="grade-icon">📖</div>
+                            <div>
+                                <h3 class="grade-title">9 ශ්‍රේණිය</h3>
+                                <p class="grade-subtitle">ද්විතීයික අධ්‍යාපනය</p>
+                            </div>
+                        </div>
+                        
+                        <div class="subjects-grid">
+                            <button class="subject-btn active" onclick="selectSubject(this, '9', 'sinhala')">🇱🇰 සිංහල</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '9', 'maths')">🔢 ගණිතය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '9', 'science')">🔬 විද්‍යාව</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '9', 'english')">🇬🇧 ඉංග්‍රීසි</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '9', 'history')">🏛️ ඉතිහාසය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '9', 'geography')">🌍 භූගෝලය</button>
+                        </div>
+
+                        <div class="content-area" id="content-9">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" onclick="switchTab(this, 'notes')">කෙටි සටහන්</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'papers')">ප්‍රශ්න පත්‍ර</button>
+                            </div>
+                            
+                            <div id="notes-9" class="tab-content">
+                                <div class="notes-list">
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>කාව්‍ය රස සටහන්</h4>
+                                            <p>PDF | 3.1 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('9-sinhala-notes-1')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>ව්‍යාකරණ සටහන්</h4>
+                                            <p>PDF | 2.7 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('9-sinhala-notes-2')">📥 බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="papers-9" class="tab-content" style="display:none;">
+                                <div class="papers-grid">
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('9-paper-2023-1st')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">දෙවන වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('9-paper-2023-2nd')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2022</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('9-paper-2022-1st')">බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grade-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+                        <div class="grade-header" style="border-bottom-color: rgba(255,255,255,0.3);">
+                            <div class="grade-icon" style="background: rgba(255,255,255,0.2);">⭐</div>
+                            <div>
+                                <h3 class="grade-title" style="color: white;">9 ශ්‍රේණිය තොරතුරු</h3>
+                                <p class="grade-subtitle" style="color: rgba(255,255,255,0.8);">විෂය මාලාව සාරාංශය</p>
+                            </div>
+                        </div>
+                        <div style="color: white;">
+                            <p style="margin-bottom: 1rem;">✅ සිංහල භාෂාව සහ සාහිත්‍යය</p>
+                            <p style="margin-bottom: 1rem;">✅ බුද්ධාගම (අනුකම්පාව)</p>
+                            <p style="margin-bottom: 1rem;">✅ ගණිතය</p>
+                            <p style="margin-bottom: 1rem;">✅ විද්‍යාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ඉංග්‍රීසි භාෂාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ඉතිහාසය</p>
+                            <p style="margin-bottom: 1rem;">✅ භූගෝල විද්‍යාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ප්‍රායෝගික තාක්ෂණවේදය</p>
+                            <p style="margin-bottom: 1rem;">✅ සිතුවම්</p>
+                            <p style="margin-bottom: 1rem;">✅ සංගීතය</p>
+                            <p style="margin-bottom: 1rem;">✅ නාට්‍ය හා රංගන කලාව</p>
+                            <p style="margin-bottom: 1rem;">✅ ශාරීරික අධ්‍යාපනය</p>
+                            <p style="margin-bottom: 1rem;">✅ සෞඛ්‍ය හා ශාරීරික අධ්‍යාපනය</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grade 10 -->
+            <div class="grade-section">
+                <h2 class="section-title">10 ශ්‍රේණිය (O/L)</h2>
+                <div class="grade-grid">
+                    <div class="grade-card">
+                        <div class="grade-header">
+                            <div class="grade-icon">🎓</div>
+                            <div>
+                                <h3 class="grade-title">10 ශ්‍රේණිය</h3>
+                                <p class="grade-subtitle">සාමාන්‍ය පෙළ (O/L)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="subjects-grid">
+                            <button class="subject-btn active" onclick="selectSubject(this, '10', 'sinhala')">🇱🇰 සිංහල</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '10', 'maths')">🔢 ගණිතය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '10', 'science')">🔬 විද්‍යාව</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '10', 'english')">🇬🇧 ඉංග්‍රීසි</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '10', 'history')">🏛️ ඉතිහාසය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '10', 'commerce')">💼 වාණිජ්‍යය</button>
+                        </div>
+
+                        <div class="content-area" id="content-10">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" onclick="switchTab(this, 'notes')">කෙටි සටහන්</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'papers')">ප්‍රශ්න පත්‍ර</button>
+                            </div>
+                            
+                            <div id="notes-10" class="tab-content">
+                                <div class="notes-list">
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>O/L සිංහල සම්පූර්ණ සටහන්</h4>
+                                            <p>PDF | 5.2 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('10-sinhala-notes-1')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>ව්‍යාකරණ සම්පූර්ණ මාර්ගෝපදේශය</h4>
+                                            <p>PDF | 3.8 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('10-sinhala-notes-2')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>සාහිත්‍ය රස සටහන්</h4>
+                                            <p>PDF | 2.9 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('10-sinhala-notes-3')">📥 බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="papers-10" class="tab-content" style="display:none;">
+                                <div class="papers-grid">
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('10-paper-2023-1st')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">දෙවන වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('10-paper-2023-2nd')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2022</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('10-paper-2022-1st')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2022</span>
+                                        <p class="paper-type">දෙවන වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('10-paper-2022-2nd')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2021</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('10-paper-2021-1st')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2021</span>
+                                        <p class="paper-type">දෙවන වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('10-paper-2021-2nd')">බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grade-card" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                        <div class="grade-header" style="border-bottom-color: #667eea;">
+                            <div class="grade-icon">📝</div>
+                            <div>
+                                <h3 class="grade-title">10 ශ්‍රේණිය තොරතුරු</h3>
+                                <p class="grade-subtitle">O/L විෂය මාලාව</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p style="margin-bottom: 1rem; color: #333;">📌 <strong>අනිවාර්ය විෂයයන්:</strong></p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• සිංහල භාෂාව සහ සාහිත්‍යය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• ඉංග්‍රීසි භාෂාව</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• ගණිතය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• විද්‍යාව</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• ඉතිහාසය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• ආගම</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• දෙවන භාෂාව (දෙමළ/ඉංග්‍රීසි)</p>
+                            <p style="margin-bottom: 1rem; color: #555;">• ප්‍රායෝගික තාක්ෂණවේදය</p>
+                            
+                            <p style="margin-bottom: 1rem; color: #333;">📌 <strong>තෝරාගත හැකි විෂයයන් (3):</strong></p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• වාණිජ්‍යය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• කෘෂිකර්මය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• සිතුවම්</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• සංගීතය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• නර්තනය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• නාට්‍ය හා රංගන කලාව</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• තොරතුරු තාක්ෂණය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• භූගෝල විද්‍යාව</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• සෞඛ්‍ය හා ශාරීරික අධ්‍යාපනය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• ආහාර හා පෝෂණය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• රූපලාවණ්‍ය විද්‍යාව</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grade 11 -->
+            <div class="grade-section">
+                <h2 class="section-title">11 ශ්‍රේණිය (O/L)</h2>
+                <div class="grade-grid">
+                    <div class="grade-card">
+                        <div class="grade-header">
+                            <div class="grade-icon">🏆</div>
+                            <div>
+                                <h3 class="grade-title">11 ශ්‍රේණිය</h3>
+                                <p class="grade-subtitle">සාමාන්‍ය පෙළ (O/L) - විභාග වසර</p>
+                            </div>
+                        </div>
+                        
+                        <div class="subjects-grid">
+                            <button class="subject-btn active" onclick="selectSubject(this, '11', 'sinhala')">🇱🇰 සිංහල</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '11', 'maths')">🔢 ගණිතය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '11', 'science')">🔬 විද්‍යාව</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '11', 'english')">🇬🇧 ඉංග්‍රීසි</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '11', 'history')">🏛️ ඉතිහාසය</button>
+                            <button class="subject-btn" onclick="selectSubject(this, '11', 'commerce')">💼 වාණිජ්‍යය</button>
+                        </div>
+
+                        <div class="content-area" id="content-11">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" onclick="switchTab(this, 'notes')">කෙටි සටහන්</button>
+                                <button class="tab-btn" onclick="switchTab(this, 'papers')">ප්‍රශ්න පත්‍ර</button>
+                            </div>
+                            
+                            <div id="notes-11" class="tab-content">
+                                <div class="notes-list">
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>O/L සිංහල අවසාන සටහන්</h4>
+                                            <p>PDF | 6.5 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-sinhala-notes-1')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>විභාග ප්‍රශ්න විශ්ලේෂණ සටහන්</h4>
+                                            <p>PDF | 4.2 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-sinhala-notes-2')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>නිබන්ධන රචනා මාර්ගෝපදේශ</h4>
+                                            <p>PDF | 3.1 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-sinhala-notes-3')">📥 බාගත කරන්න</a>
+                                    </div>
+                                    <div class="note-item">
+                                        <div class="note-info">
+                                            <h4>කාව්‍ය හා ගද්‍ය විශ්ලේෂණ සටහන්</h4>
+                                            <p>PDF | 2.8 MB | යාවත්කාලීන කළේ: 2024</p>
+                                        </div>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-sinhala-notes-4')">📥 බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="papers-11" class="tab-content" style="display:none;">
+                                <div class="papers-grid">
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">පළමු වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-paper-2023-1st')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2023</span>
+                                        <p class="paper-type">දෙවන වාර පරීක්ෂණය</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-paper-2023-2nd')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2022</span>
+                                        <p class="paper-type">O/L විභාග ප්‍රශ්න පත්‍ර</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-ol-2022')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2021</span>
+                                        <p class="paper-type">O/L විභාග ප්‍රශ්න පත්‍ර</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-ol-2021')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2020</span>
+                                        <p class="paper-type">O/L විභාග ප්‍රශ්න පත්‍ර</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-ol-2020')">බාගත කරන්න</a>
+                                    </div>
+                                    <div class="paper-card">
+                                        <span class="year-badge">2019</span>
+                                        <p class="paper-type">O/L විභාග ප්‍රශ්න පත්‍ර</p>
+                                        <a href="#" class="download-btn" onclick="downloadFile('11-ol-2019')">බාගත කරන්න</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grade-card" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+                        <div class="grade-header" style="border-bottom-color: #667eea;">
+                            <div class="grade-icon">🎯</div>
+                            <div>
+                                <h3 class="grade-title">11 ශ්‍රේණිය තොරතුරු</h3>
+                                <p class="grade-subtitle">O/L විභාග වසර</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                                <strong>⚠️ විභාග උපදෙස්:</strong>
+                                <p style="margin-top: 0.5rem; color: #856404;">මෙය O/L විභාගයට පෙනී සිටින වසරයි. කාලසටහනක් සකස් කර නිවැරදිව අධ්‍යයනය කරන්න.</p>
+                            </div>
+                            
+                            <p style="margin-bottom: 1rem; color: #333;"><strong>📚 විෂය මාලාව:</strong></p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• සිංහල භාෂාව සහ සාහිත්‍යය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• ඉංග්‍රීසි භාෂාව</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• ගණිතය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• විද්‍යාව</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• ඉතිහාසය</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• ආගම</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• දෙවන භාෂාව</p>
+                            <p style="margin-bottom: 0.5rem; color: #555;">• තෝරාගත් විෂයයන් 3</p>
+                            
+                            <div style="margin-top: 1.5rem; padding: 1rem; background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
+                                <strong>💡 උපදෙස්:</strong>
+                                <ul style="margin-top: 0.5rem; padding-left: 1.2rem; color: #155724;">
+                                    <li>පසුගිය විභාග ප්‍රශ්න පත්‍ර විසඳන්න</li>
+                                    <li>කාලසටහනක් අනුව අධ්‍යයනය කරන්න</li>
+                                    <li>කෙටි සටහන් සකස් කරන්න</li>
+                                    <li>නිතිපතා විවේචනාත්මක ප්‍රශ්න විසඳන්න</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Quick Access Section -->
+    <section class="quick-access" id="papers">
+        <div class="container">
+            <h2 class="section-title" style="color: white; border-bottom-color: white;">ඉක්මන් ප්‍රවේශය</h2>
+            <div class="quick-grid">
+                <div class="quick-card" onclick="scrollToGrade('6')">
+                    <div class="quick-icon">📚</div>
+                    <h3>6 ශ්‍රේණිය</h3>
+                    <p>ප්‍රාථමික අධ්‍යාපනය</p>
+                </div>
+                <div class="quick-card" onclick="scrollToGrade('7')">
+                    <div class="quick-icon">📝</div>
+                    <h3>7 ශ්‍රේණිය</h3>
+                    <p>ප්‍රාථමික
