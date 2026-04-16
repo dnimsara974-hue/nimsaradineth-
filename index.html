@@ -1,4 +1,3 @@
-
 html_code = '''<!DOCTYPE html>
 <html lang="si">
 <head>
@@ -1066,4 +1065,272 @@ print("   • Short Notes & Papers buttons for each subject")
 print("   • Language switcher (Sinhala/Tamil/English)")
 print("   • Touch-friendly mobile responsive design")
 print("   • Smooth animations and hover effects")
-print("   • Download resources section")
+print("   • Download resources 
+html_codecenter;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+        
+        /* Language Selector */
+        .lang-selector {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: transparent;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .lang-btn:hover, .lang-btn.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+        
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            transition: 0.3s;
+        }
+        
+        /* Navigation */
+        nav {
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStudy - 6-11 ශ්‍රේණි</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">📚 SmartStudy</div>
+        <ul class="nav-links">
+            <li><a href="#home">මුල් පිටුව</a></li>
+            <li><a href="#grades">ශ්‍රේණි</a></li>
+            <li><a href="#subjects">විෂය</a></li>
+            <li><a href="#papers">ප්‍රශ්න පත්‍ර</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="home">
+        <h1>6-11 ශ්‍රේණි සඳහා නොමිලේ ඉගෙනීම</h1>
+        <p>සියලුම විෂයයන් එකම තැනක</p>
+    </section>
+
+    <section class="grades-section" id="grades">
+        <h2>ඔබේ ශ්‍රේණිය තෝරන්න</h2>
+        <div class="grades-grid">
+            <div class="grade-card" onclick="showSubjects(6)">
+                <div class="grade-num">6</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(7)">
+                <div class="grade-num">7</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(8)">
+                <div class="grade-num">8</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(9)">
+                <div class="grade-num">9</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(10)">
+                <div class="grade-num">10</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(11)">
+                <div class="grade-num">11</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="subjects-section" id="subjects">
+        <h2>විෂයයන්</h2>
+        <div id="subjects-container" class="subjects-grid">
+            <p class="select-msg">ශ්‍රේණියක් තෝරන්න</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 SmartStudy</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartStudy - 6-11 ශ්‍රේණි</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">📚 SmartStudy</div>
+        <ul class="nav-links">
+            <li><a href="#home">මුල් පිටුව</a></li>
+            <li><a href="#grades">ශ්‍රේණි</a></li>
+            <li><a href="#subjects">විෂය</a></li>
+            <li><a href="#papers">ප්‍රශ්න පත්‍ර</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero" id="home">
+        <h1>6-11 ශ්‍රේණි සඳහා නොමිලේ ඉගෙනීම</h1>
+        <p>සියලුම විෂයයන් එකම තැනක</p>
+    </section>
+
+    <section class="grades-section" id="grades">
+        <h2>ඔබේ ශ්‍රේණිය තෝරන්න</h2>
+        <div class="grades-grid">
+            <div class="grade-card" onclick="showSubjects(6)">
+                <div class="grade-num">6</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(7)">
+                <div class="grade-num">7</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(8)">
+                <div class="grade-num">8</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(9)">
+                <div class="grade-num">9</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(10)">
+                <div class="grade-num">10</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+            <div class="grade-card" onclick="showSubjects(11)">
+                <div class="grade-num">11</div>
+                <p>ශ්‍රේණිය</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="subjects-section" id="subjects">
+        <h2>විෂයයන්</h2>
+        <div id="subjects-container" class="subjects-grid">
+            <p class="select-msg">ශ්‍රේණියක් තෝරන්න</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 SmartStudy</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLearn - ඔබේ ඉගෙනීමේ මඟ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">SmartLearn</div>
+        <ul class="nav-links">
+            <li><a href="#home">මුල් පිටුව</a></li>
+            <li><a href="#courses">පාඨමාලා</a></li>
+            <li><a href="#about">අපි ගැන</a></li>
+            <li><a href="#contact">සම්බන්ධ වන්න</a></li>
+        </ul>
+        <button class="login-btn">පිවිසෙන්න</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>ඔබේ දැනුම විහිදුවන්න</h1>
+            <p>ඕනෑම තැනක සිට, ඕනෑම වේලාවක ඉගෙන ගන්න</p>
+            <button class="cta-btn">අදම ආරම්භ කරන්න</button>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="courses" id="courses">
+        <h2>ජනප්‍රිය පාඨමාලා</h2>
+        <div class="course-grid">
+            <div class="course-card">
+                <div class="course-img">📊</div>
+                <h3>ව්‍යාපාර කළමනාකරණය</h3>
+                <p>ව්‍යාපාරයක් පටන් ගන්නා ආකාරය</p>
+                <button class="enroll-btn">ලියාපදිංචි වන්න</button>
+            </div>
+            <div class="course-card">
+                <div class="course-img">💻</div>
+                <h3>පරිගණක විද්‍යාව</h3>
+                <p>Programming මූලික කරුණු</p>
+                <button class="enroll-btn">ලියාපදිංචි වන්න</button>
+            </div>
+            <div class="course-card">
+                <div class="course-img">🎨</div>
+                <h3>ග්‍රැෆික් ඩිසයිනිං</h3>
+                <p>නිර්මාණාත්මක කලාව</p>
+                <button class="enroll-btn">ලියාපදිංචි වන්න</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2>අපගේ විශේෂතා</h2>
+        <div class="feature-list">
+            <div class="feature">
+                <span class="icon">🎥</span>
+                <h3>වීඩියෝ පාඩම්</h3>
+            </div>
+            <div class="feature">
+                <span class="icon">📱</span>
+                <h3>Mobile Friendly</h3>
+            </div>
+            <div class="feature">
+                <span class="icon">🏆</span>
+                <h3>සහතිකපත්</h3>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 SmartLearn. සියලුම හිමිකම් ඇවිරිණි.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>     
