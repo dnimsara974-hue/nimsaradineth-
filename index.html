@@ -1,10 +1,10 @@
 
-html_code = '''<!DOCTYPE html>
+html_content = '''<!DOCTYPE html>
 <html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>වේලාව Theme Changer</title>
+    <title>Nova</title>
     <style>
         * {
             margin: 0;
@@ -14,232 +14,363 @@ html_code = '''<!DOCTYPE html>
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
+            background: #000000;
+            height: 100vh;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Animated stars background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Welcome text */
+        .welcome-container {
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .welcome-text {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            letter-spacing: 4px;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
+            to { text-shadow: 0 0 40px rgba(240, 147, 251, 0.8), 0 0 60px rgba(102, 126, 234, 0.6); }
+        }
+
+        /* Chat bar container */
+        .chat-container {
+            z-index: 10;
+            width: 90%;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .chat-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 8px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .chat-bar:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .chat-bar:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 1.1rem;
+            padding: 15px 25px;
+            font-family: inherit;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            cursor: pointer;
+            display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.5s ease;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 1.2rem;
         }
 
-        /* දවල් Theme */
-        body.day {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
+        .send-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
         }
 
-        /* රාත්‍රී Theme */
-        body.night {
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            color: #fff;
+        .send-btn:active {
+            transform: scale(0.95);
         }
 
-        .container {
-            text-align: center;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 90%;
+        /* Touch ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out;
+            pointer-events: none;
         }
 
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
 
-        .time-display {
-            font-size: 4em;
-            font-weight: bold;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(102, 126, 234, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 10s infinite linear;
         }
 
-        .date-display {
-            font-size: 1.3em;
-            margin-bottom: 20px;
-            opacity: 0.9;
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
         }
 
-        .status {
-            font-size: 1.5em;
-            padding: 15px 30px;
-            border-radius: 50px;
-            margin: 20px 0;
-            display: inline-block;
-            font-weight: bold;
-        }
-
-        body.day .status {
-            background: rgba(255, 215, 0, 0.3);
-            border: 2px solid #ffd700;
-        }
-
-        body.night .status {
-            background: rgba(100, 149, 237, 0.3);
-            border: 2px solid #6495ed;
-        }
-
-        .icon {
-            font-size: 5em;
-            margin: 20px 0;
-        }
-
-        .info {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            font-size: 0.95em;
-            line-height: 1.6;
-        }
-
-        .manual-toggle {
-            margin-top: 20px;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
-
-        body.day .manual-toggle {
-            background: #ffd700;
-            color: #333;
-        }
-
-        body.night .manual-toggle {
-            background: #6495ed;
-            color: #fff;
-        }
-
-        .manual-toggle:hover {
-            transform: scale(1.05);
-        }
-
+        /* Responsive */
         @media (max-width: 600px) {
-            h1 { font-size: 1.8em; }
-            .time-display { font-size: 2.5em; }
-            .date-display { font-size: 1em; }
+            .welcome-text {
+                font-size: 2.5rem;
+                letter-spacing: 4px;
+            }
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        /* Touch feedback */
+        .touch-feedback {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(102, 126, 234, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            animation: touch-pulse 0.5s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes touch-pulse {
+            to {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="icon" id="icon">☀️</div>
-        <h1>සුභ දවසක්!</h1>
-        <div class="time-display" id="time">00:00:00</div>
-        <div class="date-display" id="date">Loading...</div>
-        <div class="status" id="status">දවල්</div>
-        
-        <div class="info">
-            <p>🌍 <strong>ස්ථානය:</strong> ශ්‍රී ලංකාව (GMT+5:30)</p>
-            <p>🕐 <strong>වේලාව:</strong> <span id="localTime">Loading...</span></p>
-            <p>🌅 <strong>දවල්:</strong> 6:00 AM - 6:00 PM</p>
-            <p>🌙 <strong>රාත්‍රී:</strong> 6:00 PM - 6:00 AM</p>
-        </div>
+    <!-- Animated stars -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Floating particles -->
+    <div id="particles"></div>
 
-        <button class="manual-toggle" onclick="toggleTheme()">Theme එක මාරු කරන්න</button>
+    <!-- Welcome text -->
+    <div class="welcome-container">
+        <h1 class="welcome-text">NOVA</h1>
+        <p class="subtitle">Welcome to the Future</p>
+    </div>
+
+    <!-- Chat bar -->
+    <div class="chat-container">
+        <div class="chat-bar" id="chatBar">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message here..." autocomplete="off">
+            <button class="send-btn" id="sendBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <script>
-        let isManual = false;
-        let manualTheme = null;
+        // Create stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.opacity = Math.random();
+            starsContainer.appendChild(star);
+        }
 
-        function updateTime() {
-            const now = new Date();
-            
-            // වේලාව format කිරීම
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
-            
-            // දිනය format කිරීම
-            const options = { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                weekday: 'long'
-            };
-            document.getElementById('date').textContent = now.toLocaleDateString('si-LK', options);
-            document.getElementById('localTime').textContent = now.toLocaleTimeString('si-LK');
-            
-            // Theme එක update කිරීම
-            if (!isManual) {
-                updateTheme(now.getHours());
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Touch/Mouse ripple effect
+        document.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            ripple.className = 'touch-feedback';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 500);
+        });
+
+        // Chat functionality
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatBar = document.getElementById('chatBar');
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                // Create ripple effect on button
+                const btn = sendBtn;
+                const rect = btn.getBoundingClientRect();
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.left = '50%';
+                ripple.style.top = '50%';
+                ripple.style.width = ripple.style.height = Math.max(rect.width, rect.height) + 'px';
+                btn.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+
+                // Simulate sending
+                chatInput.value = '';
+                chatInput.placeholder = 'Sending...';
+                setTimeout(() => {
+                    chatInput.placeholder = 'Type your message here...';
+                }, 1000);
+                
+                console.log('Message sent:', message);
             }
         }
 
-        function updateTheme(hour) {
-            const body = document.body;
-            const icon = document.getElementById('icon');
-            const status = document.getElementById('status');
-            const heading = document.querySelector('h1');
-            
-            // දවල් 6 AM - 6 PM
-            if (hour >= 6 && hour < 18) {
-                body.className = 'day';
-                icon.textContent = '☀️';
-                status.textContent = '🌅 දවල්';
-                heading.textContent = 'සුභ දවසක්!';
-            } else {
-                body.className = 'night';
-                icon.textContent = '🌙';
-                status.textContent = '🌙 රාත්‍රී';
-                heading.textContent = 'සුභ රාත්‍රියක්!';
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
             }
-        }
+        });
 
-        function toggleTheme() {
-            isManual = !isManual;
-            const body = document.body;
-            const icon = document.getElementById('icon');
-            const status = document.getElementById('status');
-            const heading = document.querySelector('h1');
+        // Touch swipe detection for mobile
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.changedTouches[0].screenY;
+        }, false);
+
+        document.addEventListener('touchend', function(e) {
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartY - touchEndY;
             
-            if (isManual) {
-                // Manual toggle
-                if (body.className === 'day') {
-                    body.className = 'night';
-                    icon.textContent = '🌙';
-                    status.textContent = '🌙 රාත්‍රී (Manual)';
-                    heading.textContent = 'සුභ රාත්‍රියක්!';
-                } else {
-                    body.className = 'day';
-                    icon.textContent = '☀️';
-                    status.textContent = '🌅 දවල් (Manual)';
-                    heading.textContent = 'සුභ දවසක්!';
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe up - focus input
+                    chatInput.focus();
                 }
-            } else {
-                // Auto mode ට ආපසු යාම
-                updateTime();
             }
         }
 
-        // Initial call
-        updateTime();
-        
-        // සෑම තත්පරයකම update කිරීම
-        setInterval(updateTime, 1000);
+        // Auto-focus on load for desktop
+        if (window.innerWidth > 768) {
+            setTimeout(() => chatInput.focus(), 1000);
+        }
     </script>
 </body>
 </html>'''
 
-# Save to file
-with open('/mnt/kimi/output/time_theme_website.html', 'w', encoding='utf-8') as f:
-    f.write(html_code)
+# Save the file
+with open('/mnt/kimi/output/nova_website.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
 
-print("✅ Website එක හදා ඉවරයි!")
-print("\n📁 File location: /mnt/kimi/output/time_theme_website.html")
-print("\n🎯 Features:")
-print("   • දවල් (6 AM - 6 PM): ලා නිල්/දම් පාට theme එක")
-print("   • රාත්‍රී (6 PM - 6 AM): තද නිල්/කළු theme එක")
-print("   • සජීවී වේලාව පෙන්වයි")
-print("   • සිංහල දිනය පෙන්වයි")
-print("   • Manual theme toggle button එකක්")
+print("✅ Nova website created successfully!")
+print("\n📁 File saved to: /mnt/kimi/output/nova_website.html")
+print("\n🌟 Features included:")
+print("   • Black background with animated stars")
+print("   • 'Welcome to Nova' gradient text with glow effect")
+print("   • Touch-responsive chat bar with ripple effects")
+print("   • Glassmorphism design with blur effects")
+print("   • Floating particles animation")
+print("   • Mobile-friendly responsive design")
+print("   • Swipe up to focus on mobile")
