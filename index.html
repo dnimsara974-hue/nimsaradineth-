@@ -1,508 +1,722 @@
-<        .shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            background: white;
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-            left: 70%;
-            top: 80%;
-            animation-delay: 10s;
-        }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-100px) rotate(180deg); }
+html_code = '''<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ලෝක පුදුම 7 - සෙවුම් පද්ධතිය</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
+        
+        body {
+            font-family: 'Noto Sans Sinhala', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
             padding: 20px;
         }
-
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
         header {
             text-align: center;
-            padding: 60px 20px 40px;
-            animation: fadeInDown 1s ease;
+            padding: 40px 20px;
+            color: white;
         }
-
-        .welcome-text {
-            font-size: 1.5rem;
-            font-weight: 600;
+        
+        header h1 {
+            font-size: 3em;
             margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.2em;
             opacity: 0.9;
         }
-
-        h1 {
-            font-size: 5rem;
-            font-weight: 900;
-            text-shadow: 4px 4px 0px rgba(0,0,0,0.2), 8px 8px 20px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #fff, #ffd700, #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 2px;
-            animation: shimmer 3s infinite;
+        
+        /* Search Bar */
+        .search-container {
+            max-width: 600px;
+            margin: 30px auto;
+            position: relative;
         }
-
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
+        
+        .search-box {
+            width: 100%;
+            padding: 20px 60px 20px 25px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
-
-        .subtitle {
-            font-size: 1.3rem;
-            opacity: 0.95;
-            font-weight: 500;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
         }
-
-        .grades-section {
-            margin: 40px 0;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 30px;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .grades-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .grade-btn {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 25px 15px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            border-radius: 20px;
+        
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ff6b6b;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            font-family: 'Poppins', sans-serif;
+            color: white;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
         }
-
-        .grade-btn:hover {
-            transform: translateY(-10px) scale(1.05);
-            background: rgba(255, 255, 255, 0.3);
-            border-color: white;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        
+        .search-btn:hover {
+            background: #ee5a5a;
+            transform: translateY(-50%) scale(1.1);
         }
-
-        .grade-btn.active {
-            background: rgba(255, 215, 0, 0.4);
-            border-color: #ffd700;
-            transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-        }
-
-        .subjects-container {
-            display: none;
-            animation: fadeInUp 0.6s ease;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 40px;
-            margin-top: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-        }
-
-        .subjects-container.active {
-            display: block;
-        }
-
-        .selected-grade-title {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 30px;
-            color: #ffd700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            font-weight: 800;
-        }
-
-        .subjects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .subject-card {
-            background: rgba(255, 255, 255, 0.95);
-            color: #333;
-            border-radius: 20px;
-            padding: 30px;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 3px solid transparent;
-        }
-
-        .subject-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            border-color: #667eea;
-        }
-
-        .subject-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #764ba2;
-            border-bottom: 3px solid #f093fb;
-            padding-bottom: 10px;
-        }
-
-        .links-container {
+        
+        .filter-buttons {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
         }
-
-        .link-btn {
+        
+        .filter-btn {
+            padding: 10px 25px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: white;
+            color: #2a5298;
+        }
+        
+        /* Cards Grid */
+        .wonders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .wonder-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .wonder-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        
+        .wonder-card.hidden {
+            display: none;
+        }
+        
+        .card-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .card-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .card-content {
+            padding: 25px;
+        }
+        
+        .card-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .card-location {
+            color: #7f8c8d;
+            font-size: 1em;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 15px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            gap: 8px;
+        }
+        
+        .card-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .card-stats {
+            display: flex;
+            gap: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2a5298;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+        
+        .no-results {
+            text-align: center;
             color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            font-size: 1.3em;
+            padding: 50px;
+            display: none;
         }
-
-        .link-btn:hover {
-            transform: translateX(10px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-            background: linear-gradient(135deg, #764ba2 0%, #f093fb 100%);
+        
+        .no-results.show {
+            display: block;
         }
-
-        .link-btn.short-note {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
         }
-
-        .link-btn.short-note:hover {
-            background: linear-gradient(135deg, #f5576c 0%, #ffecd2 100%);
-            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.6);
+        
+        .modal-content {
+            background: white;
+            max-width: 800px;
+            margin: 50px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
         }
-
-        .arrow {
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
-
-        .link-btn:hover .arrow {
-            transform: translateX(5px);
+        
+        .modal-image {
+            height: 400px;
+            background-size: cover;
+            background-position: center;
         }
-
+        
+        .modal-body {
+            padding: 40px;
+        }
+        
+        .modal-title {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .modal-text {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .info-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .info-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #2c3e50;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
         footer {
             text-align: center;
-            padding: 50px 20px 30px;
-            margin-top: 60px;
-            border-top: 2px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
+            color: white;
+            padding: 40px;
+            margin-top: 50px;
+            opacity: 0.8;
         }
-
-        .creator-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            opacity: 0.9;
-        }
-
-        .creator-name {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #ffd700;
-            margin-top: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .year-badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        
         @media (max-width: 768px) {
-            h1 {
-                font-size: 3rem;
+            header h1 {
+                font-size: 2em;
             }
             
-            .grades-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-                gap: 15px;
-            }
-            
-            .grade-btn {
-                padding: 20px 10px;
-                font-size: 1.2rem;
-            }
-            
-            .subjects-container {
-                padding: 25px;
-            }
-            
-            .subjects-grid {
+            .wonders-grid {
                 grid-template-columns: 1fr;
             }
-        }
-
-        .instruction {
-            text-align: center;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            opacity: 0.9;
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 15px;
-            backdrop-filter: blur(5px);
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
     <div class="container">
         <header>
-            <div class="welcome-text">Welcome to</div>
-            <h1>NOVA ACADEMY</h1>
-            <div class="subtitle">ඔබේ අධ්‍යාපනික ගමනේ විශ්වාසදායී සහකරු</div>
-            <div class="year-badge">Past Papers & Short Notes Collection</div>
+            <h1>🌍 ලෝක පුදුම 7</h1>
+            <p>මිනිසා විසින් නිර්මාණය කරන ලද අද්විතීය ගොඩනැගිලි</p>
         </header>
-
-        <section class="grades-section">
-            <h2 class="section-title">ශ්‍රේණිය තෝරන්න / Select Your Grade</h2>
-            <p class="instruction">ඔබගේ ශ්‍රේණිය මත click කර විෂයයන් බලන්න</p>
-            
-            <div class="grades-grid">
-                <button class="grade-btn" onclick="showSubjects(6)">Grade 6</button>
-                <button class="grade-btn" onclick="showSubjects(7)">Grade 7</button>
-                <button class="grade-btn" onclick="showSubjects(8)">Grade 8</button>
-                <button class="grade-btn" onclick="showSubjects(9)">Grade 9</button>
-                <button class="grade-btn" onclick="showSubjects(10)">Grade 10</button>
-                <button class="grade-btn" onclick="showSubjects(11)">Grade 11</button>
-                <button class="grade-btn" onclick="showSubjects(12)">Grade 12</button>
-                <button class="grade-btn" onclick="showSubjects(13)">Grade 13</button>
-            </div>
-
-            <div id="subjects-display" class="subjects-container">
-                <h3 class="selected-grade-title" id="grade-title">Grade 6</h3>
-                <div class="subjects-grid" id="subjects-grid">
-                    <!-- Subjects will be populated here -->
-                </div>
-            </div>
-        </section>
-
-        <footer>
-            <div class="creator-text">Website Created By</div>
-            <div class="creator-name">Dineth Nimsara</div>
-            <p style="margin-top: 15px; opacity: 0.8; font-size: 0.9rem;">© 2024 Nova Academy. All rights reserved.</p>
-        </footer>
+        
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchInput" placeholder="පුදුමයක් සොයන්න... (උදා: ටාජ් මහල්, පිරමිඩය)">
+            <button class="search-btn">🔍</button>
+        </div>
+        
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterWonders('all')">සියලුම</button>
+            <button class="filter-btn" onclick="filterWonders('new')">නව පුදුම 7</button>
+            <button class="filter-btn" onclick="filterWonders('ancient')">පුරාතන පුදුම</button>
+        </div>
+        
+        <div class="wonders-grid" id="wondersGrid">
+            <!-- Cards will be inserted here by JavaScript -->
+        </div>
+        
+        <div class="no-results" id="noResults">
+            😕 සෙවුමට ගැලපෙමින් කිසිවක් හමු නොවීය. වෙනත් සෙවුමක් උත්සාහ කරන්න.
+        </div>
     </div>
-
+    
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div class="modal-image" id="modalImage"></div>
+            <div class="modal-body">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <p class="modal-text" id="modalDescription"></p>
+                <div class="info-grid" id="modalInfo"></div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2026 ලෝක පුදුම 7 - සෙවුම් පද්ධතිය</p>
+    </footer>
+    
     <script>
-        const subjectsData = {
-            6: [
-                { name: "ගණිතය / Mathematics", pastPaper: "https://pastpapers.wiki/grade-6-maths/", shortNote: "https://pastpapers.wiki/grade-6-maths-short-notes/" },
-                { name: "විද්‍යාව / Science", pastPaper: "https://pastpapers.wiki/grade-6-science/", shortNote: "https://pastpapers.wiki/grade-6-science-short-notes/" },
-                { name: "සිංහල භාෂාව / Sinhala", pastPaper: "https://pastpapers.wiki/grade-6-sinhala/", shortNote: "https://pastpapers.wiki/grade-6-sinhala-short-notes/" },
-                { name: "ඉංග්‍රීසි භාෂාව / English", pastPaper: "https://pastpapers.wiki/grade-6-english/", shortNote: "https://pastpapers.wiki/grade-6-english-short-notes/" },
-                { name: "ඉතිහාසය / History", pastPaper: "https://pastpapers.wiki/grade-6-history/", shortNote: "https://pastpapers.wiki/grade-6-history-short-notes/" },
-                { name: "ආගම / Religion", pastPaper: "https://pastpapers.wiki/grade-6-religion/", shortNote: "https://pastpapers.wiki/grade-6-religion-short-notes/" }
-            ],
-            7: [
-                { name: "ගණිතය / Mathematics", pastPaper: "https://pastpapers.wiki/grade-7-maths/", shortNote: "https://pastpapers.wiki/grade-7-maths-short-notes/" },
-                { name: "විද්‍යාව / Science", pastPaper: "https://pastpapers.wiki/grade-7-science/", shortNote: "https://pastpapers.wiki/grade-7-science-short-notes/" },
-                { name: "සිංහල භාෂාව / Sinhala", pastPaper: "https://pastpapers.wiki/grade-7-sinhala/", shortNote: "https://pastpapers.wiki/grade-7-sinhala-short-notes/" },
-                { name: "ඉංග්‍රීසි භාෂාව / English", pastPaper: "https://pastpapers.wiki/grade-7-english/", shortNote: "https://pastpapers.wiki/grade-7-english-short-notes/" },
-                { name: "ඉතිහාසය / History", pastPaper: "https://pastpapers.wiki/grade-7-history/", shortNote: "https://pastpapers.wiki/grade-7-history-short-notes/" },
-                { name: "භූගෝල විද්‍යාව / Geography", pastPaper: "https://pastpapers.wiki/grade-7-geography/", shortNote: "https://pastpapers.wiki/grade-7-geography-short-notes/" }
-            ],
-            8: [
-                { name: "ගණිතය / Mathematics", pastPaper: "https://pastpapers.wiki/grade-8-maths/", shortNote: "https://pastpapers.wiki/grade-8-maths-short-notes/" },
-                { name: "විද්‍යාව / Science", pastPaper: "https://pastpapers.wiki/grade-8-science/", shortNote: "https://pastpapers.wiki/grade-8-science-short-notes/" },
-                { name: "සිංහල භාෂාව / Sinhala", pastPaper: "https://pastpapers.wiki/grade-8-sinhala/", shortNote: "https://pastpapers.wiki/grade-8-sinhala-short-notes/" },
-                { name: "ඉංග්‍රීසි භාෂාව / English", pastPaper: "https://pastpapers.wiki/grade-8-english/", shortNote: "https://pastpapers.wiki/grade-8-english-short-notes/" },
-                { name: "ඉතිහාසය / History", pastPaper: "https://pastpapers.wiki/grade-8-history/", shortNote: "https://pastpapers.wiki/grade-8-history-short-notes/" },
-                { name: "පුරවැසි අධ්‍යාපනය / Civics", pastPaper: "https://pastpapers.wiki/grade-8-civics/", shortNote: "https://pastpapers.wiki/grade-8-civics-short-notes/" }
-            ],
-            9: [
-                { name: "ගණිතය / Mathematics", pastPaper: "https://pastpapers.wiki/grade-9-maths/", shortNote: "https://pastpapers.wiki/grade-9-maths-short-notes/" },
-                { name: "විද්‍යාව / Science", pastPaper: "https://pastpapers.wiki/grade-9-science/", shortNote: "https://pastpapers.wiki/grade-9-science-short-notes/" },
-                { name: "සිංහල භාෂාව / Sinhala", pastPaper: "https://pastpapers.wiki/grade-9-sinhala/", shortNote: "https://pastpapers.wiki/grade-9-sinhala-short-notes/" },
-                { name: "ඉංග්‍රීසි භාෂාව / English", pastPaper: "https://pastpapers.wiki/grade-9-english/", shortNote: "https://pastpapers.wiki/grade-9-english-short-notes/" },
-                { name: "ඉතිහාසය / History", pastPaper: "https://pastpapers.wiki/grade-9-history/", shortNote: "https://pastpapers.wiki/grade-9-history-short-notes/" },
-                { name: "ව්‍යාපාර හා ගිණුම්කරණය / Business", pastPaper: "https://pastpapers.wiki/grade-9-business/", shortNote: "https://pastpapers.wiki/grade-9-business-short-notes/" }
-            ],
-            10: [
-                { name: "ගණිතය / Mathematics", pastPaper: "https://pastpapers.wiki/grade-10-maths/", shortNote: "https://pastpapers.wiki/grade-10-maths-short-notes/" },
-                { name: "විද්‍යාව / Science", pastPaper: "https://pastpapers.wiki/grade-10-science/", shortNote: "https://pastpapers.wiki/grade-10-science-short-notes/" },
-                { name: "සිංහල භාෂාව / Sinhala", pastPaper: "https://pastpapers.wiki/grade-10-sinhala/", shortNote: "https://pastpapers.wiki/grade-10-sinhala-short-notes/" },
-                { name: "ඉංග්‍රීසි භාෂාව / English", pastPaper: "https://pastpapers.wiki/grade-10-english/", shortNote: "https://pastpapers.wiki/grade-10-english-short-notes/" },
-                { name: "ඉතිහාසය / History", pastPaper: "https://pastpapers.wiki/grade-10-history/", shortNote: "https://pastpapers.wiki/grade-10-history-short-notes/" },
-                { name: "භූගෝල විද්‍යාව / Geography", pastPaper: "https://pastpapers.wiki/grade-10-geography/", shortNote: "https://pastpapers.wiki/grade-10-geography-short-notes/" },
-                { name: "ප්‍රාචීන ඉතිහාසය / Pali", pastPaper: "https://pastpapers.wiki/grade-10-pali/", shortNote: "https://pastpapers.wiki/grade-10-pali-short-notes/" },
-                { name: "ව්‍යාපාර හා ගිණුම්කරණය / Business", pastPaper: "https://pastpapers.wiki/grade-10-business/", shortNote: "https://pastpapers.wiki/grade-10-business-short-notes/" }
-            ],
-            11: [
-                { name: "ගණිතය / Mathematics", pastPaper: "https://pastpapers.wiki/grade-11-maths/", shortNote: "https://pastpapers.wiki/grade-11-maths-short-notes/" },
-                { name: "විද්‍යාව / Science", pastPaper: "https://pastpapers.wiki/grade-11-science/", shortNote: "https://pastpapers.wiki/grade-11-science-short-notes/" },
-                { name: "සිංහල භාෂාව / Sinhala", pastPaper: "https://pastpapers.wiki/grade-11-sinhala/", shortNote: "https://pastpapers.wiki/grade-11-sinhala-short-notes/" },
-                { name: "ඉංග්‍රීසි භාෂාව / English", pastPaper: "https://pastpapers.wiki/grade-11-english/", shortNote: "https://pastpapers.wiki/grade-11-english-short-notes/" },
-                { name: "ඉතිහාසය / History", pastPaper: "https://pastpapers.wiki/grade-11-history/", shortNote: "https://pastpapers.wiki/grade-11-history-short-notes/" },
-                { name: "නිවැරදි කළමනාකරණය / OLM", pastPaper: "https://pastpapers.wiki/grade-11-olm/", shortNote: "https://pastpapers.wiki/grade-11-olm-short-notes/" },
-                { name: "ව්‍යාපාර හා ගිණුම්කරණය / Business", pastPaper: "https://pastpapers.wiki/grade-11-business/", shortNote: "https://pastpapers.wiki/grade-11-business-short-notes/" },
-                { name: "තොරතුරු තාක්ෂණය / ICT", pastPaper: "https://pastpapers.wiki/grade-11-ict/", shortNote: "https://pastpapers.wiki/grade-11-ict-short-notes/" }
-            ],
-            12: [
-                { name: "භෞතික විද්‍යාව / Physics", pastPaper: "https://pastpapers.wiki/grade-12-physics/", shortNote: "https://pastpapers.wiki/grade-12-physics-short-notes/" },
-                { name: "රසායන විද්‍යාව / Chemistry", pastPaper: "https://pastpapers.wiki/grade-12-chemistry/", shortNote: "https://pastpapers.wiki/grade-12-chemistry-short-notes/" },
-                { name: "ජීව විද්‍යාව / Biology", pastPaper: "https://pastpapers.wiki/grade-12-biology/", shortNote: "https://pastpapers.wiki/grade-12-biology-short-notes/" },
-                { name: "සංයුක්ත ගණිතය / Combined Maths", pastPaper: "https://pastpapers.wiki/grade-12-maths/", shortNote: "https://pastpapers.wiki/grade-12-maths-short-notes/" },
-                { name: "ආර්ථික විද්‍යාව / Economics", pastPaper: "https://pastpapers.wiki/grade-12-economics/", shortNote: "https://pastpapers.wiki/grade-12-economics-short-notes/" },
-                { name: "ව්‍යාපාර අධ්‍යයනය / Business Studies", pastPaper: "https://pastpapers.wiki/grade-12-business/", shortNote: "https://pastpapers.wiki/grade-12-business-short-notes/" },
-                { name: "ගිණුම්කරණය / Accounting", pastPaper: "https://pastpapers.wiki/grade-12-accounting/", shortNote: "https://pastpapers.wiki/grade-12-accounting-short-notes/" },
-                { name: "ඉංග්‍රීසි භාෂාව / English", pastPaper: "https://pastpapers.wiki/grade-12-english/", shortNote: "https://pastpapers.wiki/grade-12-english-short-notes/" }
-            ],
-            13: [
-                { name: "භෞතික විද්‍යාව / Physics", pastPaper: "https://pastpapers.wiki/grade-13-physics/", shortNote: "https://pastpapers.wiki/grade-13-physics-short-notes/" },
-                { name: "රසායන විද්‍යාව / Chemistry", pastPaper: "https://pastpapers.wiki/grade-13-chemistry/", shortNote: "https://pastpapers.wiki/grade-13-chemistry-short-notes/" },
-                { name: "ජීව විද්‍යාව / Biology", pastPaper: "https://pastpapers.wiki/grade-13-biology/", shortNote: "https://pastpapers.wiki/grade-13-biology-short-notes/" },
-                { name: "සංයුක්ත ගණිතය / Combined Maths", pastPaper: "https://pastpapers.wiki/grade-13-maths/", shortNote: "https://pastpapers.wiki/grade-13-maths-short-notes/" },
-                { name: "ආර්ථික විද්‍යාව / Economics", pastPaper: "https://pastpapers.wiki/grade-13-economics/", shortNote: "https://pastpapers.wiki/grade-13-economics-short-notes/" },
-                { name: "ව්‍යාපාර අධ්‍යයනය / Business Studies", pastPaper: "https://pastpapers.wiki/grade-13-business/", shortNote: "https://pastpapers.wiki/grade-13-business-short-notes/" },
-                { name: "ගිණුම්කරණය / Accounting", pastPaper: "https://pastpapers.wiki/grade-13-accounting/", shortNote: "https://pastpapers.wiki/grade-13-accounting-short-notes/" },
-                { name: "භාෂා විද්‍යාව / Logic", pastPaper: "https://pastpapers.wiki/grade-13-logic/", shortNote: "https://pastpapers.wiki/grade-13-logic-short-notes/" },
-                { name: "අධ්‍යාපනය / Education", pastPaper: "https://pastpapers.wiki/grade-13-education/", shortNote: "https://pastpapers.wiki/grade-13-education-short-notes/" },
-                { name: "ප්‍රාචීන භාෂාව / Pali", pastPaper: "https://pastpapers.wiki/grade-13-pali/", shortNote: "https://pastpapers.wiki/grade-13-pali-short-notes/" }
-            ]
-        };
-
-        function showSubjects(grade) {
-            // Update active button state
-            document.querySelectorAll('.grade-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.includes(grade)) {
-                    btn.classList.add('active');
-                }
-            });
-
-            // Update title
-            document.getElementById('grade-title').textContent = `Grade ${grade} - විෂයයන්`;
-
-            // Populate subjects
-            const grid = document.getElementById('subjects-grid');
+        const wonders = [
+            {
+                id: 1,
+                name: "ටාජ් මහල්",
+                englishName: "Taj Mahal",
+                location: "ආග්‍රා, ඉන්දියාව",
+                country: "ඉන්දියාව",
+                type: "new",
+                year: "1653",
+                builder: "ශාහ් ජහාන්",
+                image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800",
+                description: "මුගල් අධිරාජ්‍යයේ 5 වන අධිරාජයා වන ශාහ් ජහාන් විසින් තම ප්‍රියතම බිරිඳ වන මුම්තාස් මහල් වෙනුවෙන් ඉදිකරන ලද සුදු මාබල් සුසාන භවනය. මෙය ප්‍රේමයේ සහකරු ලෙස සැලකේ.",
+                details: "ටාජ් මහල් යනු ඉස්ලාමීය ගෘහනිර්මාණ ශිල්පයේ මහිමය පෙන්වන අද්විතීය නිර්මාණයකි. මෙය ඉදිකිරීමට 22 වසරක් ගතවූ අතර 20,000 ක් පමණ කම්කරුවන් යොදවා ඇත. සුදු මාබල්, ඛනිජ, සහ අලංකාර ගල් භාවිතා කර ඇත."
+            },
+            {
+                id: 2,
+                name: "චීන මහා ප්‍රාකාරය",
+                englishName: "Great Wall of China",
+                location: "බෙයිජිං, චීනය",
+                country: "චීනය",
+                type: "new",
+                year: "ක්‍රි.පූ. 7",
+                builder: "විවිධ රාජවංශ",
+                image: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=800",
+                description: "මිනිස් විසින් නිර්මාණය කරන ලද දිගම ව්‍යුහය. මෙය උතුරු චීනයේ කොටි පතල් වලින් රට ආරක්ෂා කිරීමට ඉදිකරන ලදී.",
+                details: "මහා ප්‍රාකාරය කිලෝමීටර් 21,196 ක් දිගු වන අතර එය පෘථිවියේ වටකුරු චක්‍රයේ දිගටම යා හැකි තරම් දිගුය. මෙය ක්‍රි.පූ. 7 වන සියවසේ ආරම්භ වී චිං රාජවංශය දක්වා දිගු කරන ලදී."
+            },
+            {
+                id: 3,
+                name: "පෙට්‍රා",
+                englishName: "Petra",
+                location: "වාඩි මුසා, ජෝර්දානය",
+                country: "ජෝර්දානය",
+                type: "new",
+                year: "ක්‍රි.පූ. 5",
+                builder: "නබතියන්වරුන්",
+                image: "https://images.unsplash.com/photo-1579606038888-82c0f02f7f89?w=800",
+                description: "රෝස පැහැති ගල් කන්දක කැපීමෙන් නිර්මාණය කරන ලද පුරාණ නගරය. 'රෝස නගරය' ලෙසද හැඳින්වේ.",
+                details: "පෙට්‍රා නබතියන්වරුන්ගේ අගනුවර වූ අතර රෝමානු අධිරාජ්‍යයට පෙර පෙළගැස්මේ වැදගත් වෙළඳ මධ්‍යස්ථානයක් විය. අල්-ඛස්නෙහ් (The Treasury) එහි ප්‍රසිද්ධතම ව්‍යුහයයි."
+            },
+            {
+                id: 4,
+                name: "කොලොසියම්",
+                englishName: "Colosseum",
+                location: "රෝමය, ඉතාලිය",
+                country: "ඉතාලිය",
+                type: "new",
+                year: "ක්‍රි.ව. 80",
+                builder: "රෝමානුවන්",
+                image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800",
+                description: "පුරාතන රෝමයේ විශාලතම ඇම්ෆිතියේටර්. ග්ලැඩියේටර් සටන් සහ මහජන මනෝරංජනය සඳහා භාවිතා විය.",
+                details: "කොලොසියම් ප්‍රේක්ෂකයින් 50,000-80,000 දක්වා ධාරිතාවක් ඇත. මෙය කොන්ක්‍රීට් සහ වැලිගලින් නිර්මාණය කර ඇත. එහි ඇති මහා දොරවල් සහ උපාංග පද්ධති ඉංජිනේරු අද්විතීයත්වය පෙන්වයි."
+            },
+            {
+                id: 5,
+                name: "චිචෙන් ඉට්සා",
+                englishName: "Chichén Itzá",
+                location: "යුකටන්, මෙක්සිකෝව",
+                country: "මෙක්සිකෝව",
+                type: "new",
+                year: "ක්‍රි.ව. 600",
+                builder: "මායාවරුන්",
+                image: "https://images.unsplash.com/photo-1518638151313-982d912ca41e?w=800",
+                description: "පුරාණ මායා ශිෂ්ටාචාරයේ මධ්‍යස්ථානය. එල් කැස්ටිලෝ පිරමිඩය ග්‍රහලෝක වලට සම්බන්ධයි.",
+                details: "එල් කැස්ටිලෝ පිරමිඩයේ 365 පියගැටපෙළක් ඇත (වසරේ දින ගණනට සමාන). සම සූර්යයාගේ දිනවල සෙවණැල්ල විශේෂ රටාවක් සාදයි. මෙය මායානු තාරකා විද්‍යාවේ ප්‍රවීණත්වය පෙන්වයි."
+            },
+            {
+                id: 6,
+                name: "මාචු පිකුචු",
+                englishName: "Machu Picchu",
+                location: "කුස්කෝ, පේරු",
+                country: "පේරු",
+                type: "new",
+                year: "ක්‍රි.ව. 1450",
+                builder: "පචාකුටි",
+                image: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=800",
+                description: "ඉන්කා ශිෂ්ටාචාරයේ 'නැතිවූ නගරය'. ඇන්ඩීස් කඳුකරයේ මීටර් 2,430 උසට පිහිටා ඇත.",
+                details: "මාචු පිකුචු 1911 දී හයිරම් බින්ගම් විසින් නැවත සොයාගන්නා ලදී. ගල් කැපීමේ නිම්පැහැදිලි තාක්ෂණය, වාරිමාර්ග පද්ධති, සහ ක්ෂිතිජයට සමාන්තරව ඉදිකරන ලද ගොඩනැගිලි ඇත."
+            },
+            {
+                id: 7,
+                name: "ක්‍රිස්තුස් මිදුරුවා",
+                englishName: "Christ the Redeemer",
+                location: "රියෝ ඩි ජනේයිරෝ, බ්‍රසීලය",
+                country: "බ්‍රසීලය",
+                type: "new",
+                year: "1931",
+                builder: "පෝල් ලැන්ඩොව්ස්කි",
+                image: "https://images.unsplash.com/photo-1619546952912-535e9ec911f5?w=800",
+                description: "කොර්කෝවාඩෝ කන්ද මුදුනේ පිහිටා ඇති යේසුස් ක්‍රිස්තුස් පිළිමය. කලා ඩෙකෝ ශිල්පීය විලාසයෙන් යුක්තය.",
+                details: "මෙම පිළිමය මීටර් 30 උසින් යුක්ත වන අතර අත් පළල මීටර් 28 කි. මෙය ශුද්ධ වූ ප්‍රතිමාවක් පමණක් නොව බ්‍රසීලයේ සංස්කෘතික සංකේතයකි."
+            },
+            {
+                id: 8,
+                name: "ගිසාහි මහා පිරමිඩය",
+                englishName: "Great Pyramid of Giza",
+                location: "ගිසා, ඊජිප්තුව",
+                country: "ඊජිප්තුව",
+                type: "ancient",
+                year: "ක්‍රි.පූ. 2560",
+                builder: "ෆැරෝ ඛුෆු",
+                image: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=800",
+                description: "පුරාතන ලෝක පුදුම 7 වලින් එකම ඉතිරිව ඇති පුදුමය. මිනිසා විසින් නිර්මාණය කරන ලද දිගටම විශාලතම ව්‍යුහය.",
+                details: "මහා පිරමිඩය තැනීමට දැවැන්ත ගල් කුට්ටි මිලියන 2.3 ක් යොදාගෙන ඇත. එය මීටර් 146 උසින් යුක්ත වූ අතර 4,500 වසරකට වඩා පැරණිය. එහි ඇති ගණිතමය නිරවද්‍යතාවය අදටත් විද්‍යාඥයින් පුදුමයට පත් කරයි."
+            },
+            {
+                id: 9,
+                name: "බැබිලෝනියේ එල්ලෙන උද්‍යාන",
+                englishName: "Hanging Gardens",
+                location: "බැබිලෝනියාව, ඉරාකය",
+                country: "ඉරාකය",
+                type: "ancient",
+                year: "ක්‍රි.පූ. 600",
+                builder: "නබුකඩ්නෙසර් II",
+                image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800",
+                description: "පුරාතන ලෝක පුදුමයක් වූ මෙය ගොඩනැගිල්ලක එල්ලී තිබූ උද්‍යාන පද්ධතියක්. එහි පැවැත්ම ගැන විවාද ඇත.",
+                details: "පුරාණ ග්‍රීක ලේඛකයන් විස්තර කළ මෙම උද්‍යාන පද්ධතිය නබුකඩ්නෙසර් II තම මෙදියානු බිරිඳ වෙනුවෙන් ඉදිකළ බව කියනු ලැබේ. නමුත් මෙහි පුරාවිද්‍යා සාක්ෂි සොයාගෙන නැත."
+            },
+            {
+                id: 10,
+                name: "ඔලිම්පියාවේ සියුස් පිළිමය",
+                englishName: "Statue of Zeus",
+                location: "ඔලිම්පියාව, ග්‍රීසිය",
+                country: "ග්‍රීසිය",
+                type: "ancient",
+                year: "ක්‍රි.පූ. 435",
+                builder: "ෆිඩියස්",
+                image: "https://images.unsplash.com/photo-1566196725116-0527b2a8b80a?w=800",
+                description: "පුරාතන ග්‍රීසියේ විශාලතම පිළිමයක්. සියුස් දෙවියන් ඇඳගත් රන් හා අයිවරි පිළිමයක්.",
+                details: "මෙම පිරමිඩාකාර පිළිමය මීටර් 12 උසින් යුක්ත විය. ෆිඩියස් විසින් නිර්මාණය කරන ලද මෙය ඔලිම්පික් ක්‍රීඩා ආරම්භ වූ ස්ථානයේ පිහිටා ඇත. ක්‍රි.ව. 5 වන සියවසේ ගිනි ගැනීමෙන් විනාශ විය."
+            },
+            {
+                id: 11,
+                name: "ඇලෙක්සැන්ඩ්‍රියාවේ ප්‍රදීපාගාරය",
+                englishName: "Lighthouse of Alexandria",
+                location: "ඇලෙක්සැන්ඩ්‍රියාව, ඊජිප්තුව",
+                country: "ඊජිප්තුව",
+                type: "ancient",
+                year: "ක්‍රි.පූ. 280",
+                builder: "ප්ටොලමි II",
+                image: "https://images.unsplash.com/photo-1516483638521-37b4646e0f92?w=800",
+                description: "පුරාතන ලෝකයේ උසම ව්‍යුහයක්. මුහුදු යාත්‍රා මග පෙන්වීමට භාවිතා වූ ප්‍රදීපාගාරය.",
+                details: "මෙම ප්‍රදීපාගාරය මීටර් 100-130 අතර උසකින් යුක්ත විය. එය ත්‍රිමාණ පදනමකින් යුක්ත වූ අතර දර්පණ පද්ධතියක් භාවිතා කර ඇත. 1303-1480 අතර භූමිකම්පා වලින් විනාශ විය."
+            },
+            {
+                id: 12,
+                name: "එෆසස්හි ආර්ටෙමිස් දේවාලය",
+                englishName: "Temple of Artemis",
+                location: "එෆසස්, තුර්කිය",
+                country: "තුර්කිය",
+                type: "ancient",
+                year: "ක්‍රි.පූ. 550",
+                builder: "ක්‍රේසස්",
+                image: "https://images.unsplash.com/photo-1572883454114-1cf0031a7a7a?w=800",
+                description: "පුරාතන ලෝකයේ විශාලතම ග්‍රීක දේවාලය. ආර්ටෙමිස් දෙවඟනට посвящен වූ මෙය 127 ක් තුරුලු ඇත.",
+                details: "මෙම දේවාලය ක්‍රි.පූ. 356 දී හෙරෝස්ට්‍රැටස් නමැත්තා විසින් ගිනි තබා විනාශ කරන ලදී. පසුව ඇලෙක්සැන්ඩර් මහා විසින් නැවත ගොඩනගන ලදී. එකල ලෝකයේ විශාලතම ගොඩනැගිල්ල විය."
+            },
+            {
+                id: 13,
+                name: "හැලිකාර්නැසස්හි සුසාන භවනය",
+                englishName: "Mausoleum",
+                location: "හැලිකාර්නැසස්, තුර්කිය",
+                country: "තුර්කිය",
+                type: "ancient",
+                year: "ක්‍රි.පූ. 353",
+                builder: "මෞසෝලස්",
+                image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800",
+                description: "මෞසෝලස් රජුගේ සුසාන භවනය. 'මවෝසෝලියම්' යන වචනය මෙයින් පැමිණියේය.",
+                details: "මෙය ග්‍රීක, ලිසියානු සහ ඊජිප්තු ගෘහනිර්මාණ ශිල්ප ඒකාබද්ධ කළ අතර මීටර් 45 උසින් යුක්ත විය. මෞසෝලස් රජු සහ ඔහුගේ බිරිඳ රාතිරියා එහි තැන්පත් කර ඇත. 1494 දී නයිට්ස් හොස්පිටලර්ස් විසින් විනාශ කරන ලදී."
+            },
+            {
+                id: 14,
+                name: "රෝඩ්ස්හි කොලොසස්",
+                englishName: "Colossus of Rhodes",
+                location: "රෝඩ්ස්, ග්‍රීසිය",
+                country: "ග්‍රීසිය",
+                type: "ancient",
+                year: "ක්‍රි.පූ. 292",
+                builder: "කාර්යිස්",
+                image: "https://images.unsplash.com/photo-1564399580075-5dfe19c205f3?w=800",
+                description: "හෙලියෝස් දෙවියන්ගේ විශාල පිත්ත පිළිමයක්. පුරාතන ලෝකයේ විශාලතම පිළිමයක්.",
+                details: "මෙම පිළිමය මීටර් 33 උසින් යුක්ත වූ අතර එය වරාය ප්‍රවේශය ඉහළින් තිබූ බව කියනු ලැබේ. නමුත් නවීන පුරාවිද්‍යාඥයින් පිළිමය එසේ පිහිටුවා තිබුනේ නැති බව කියති. ක්‍රි.පූ. 226 දී භූමිකම්පාවකින් කඩා වැටුණි."
+            }
+        ];
+        
+        let currentFilter = 'all';
+        
+        function renderWonders(wondersToRender) {
+            const grid = document.getElementById('wondersGrid');
+            const noResults = document.getElementById('noResults');
+            
             grid.innerHTML = '';
             
-            const subjects = subjectsData[grade] || [];
-            subjects.forEach(subject => {
-                const card = document.createElement('div');
-                card.className = 'subject-card';
-                card.innerHTML = `
-                    <div class="subject-name">${subject.name}</div>
-                    <div class="links-container">
-                        <a href="${subject.pastPaper}" target="_blank" class="link-btn">
-                            <span>📄 Past Papers Wiki</span>
-                            <span class="arrow">→</span>
-                        </a>
-                        <a href="${subject.shortNote}" target="_blank" class="link-btn short-note">
-                            <span>📝 Short Notes Wiki</span>
-                            <span class="arrow">→</span>
-                        </a>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-
-            // Show container
-            const container = document.getElementById('subjects-display');
-            container.classList.add('active');
-            
-            // Smooth scroll to subjects
-            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (wondersToRender.length === 0) {
+                noResults.classList.add('show');
+            } else {
+                noResults.classList.remove('show');
+                
+                wondersToRender.forEach(wonder => {
+                    const card = document.createElement('div');
+                    card.className = 'wonder-card';
+                    card.onclick = () => openModal(wonder);
+                    
+                    card.innerHTML = `
+                        <div class="card-image" style="background-image: url('${wonder.image}')">
+                            <span class="card-badge">${wonder.type === 'new' ? 'නව පුදුම 7' : 'පුරාතන පුදුම'}</span>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">${wonder.name}</h3>
+                            <div class="card-location">📍 ${wonder.location}</div>
+                            <p class="card-description">${wonder.description}</p>
+                            <div class="card-stats">
+                                <div class="stat">
+                                    <div class="stat-value">${wonder.year}</div>
+                                    <div class="stat-label">නිර්මාණය</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">${wonder.country}</div>
+                                    <div class="stat-label">රට</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+            }
         }
-
-        // Add some interactive particles on mouse move
-        document.addEventListener('mousemove', (e) => {
-            if (Math.random() > 0.97) {
-                createParticle(e.clientX, e.clientY);
+        
+        function filterWonders(type) {
+            currentFilter = type;
+            
+            // Update buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter
+            let filtered = wonders;
+            if (type !== 'all') {
+                filtered = wonders.filter(w => w.type === type);
+            }
+            
+            // Apply search if exists
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(w => 
+                    w.name.toLowerCase().includes(searchTerm) ||
+                    w.englishName.toLowerCase().includes(searchTerm) ||
+                    w.location.toLowerCase().includes(searchTerm) ||
+                    w.country.toLowerCase().includes(searchTerm) ||
+                    w.description.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            renderWonders(filtered);
+        }
+        
+        function searchWonders() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = wonders;
+            
+            // Apply type filter
+            if (currentFilter !== 'all') {
+                filtered = wonders.filter(w => w.type === currentFilter);
+            }
+            
+            // Apply search
+            if (searchTerm) {
+                filtered = filtered.filter(w => 
+                    w.name.toLowerCase().includes(searchTerm) ||
+                    w.englishName.toLowerCase().includes(searchTerm) ||
+                    w.location.toLowerCase().includes(searchTerm) ||
+                    w.country.toLowerCase().includes(searchTerm) ||
+                    w.description.toLowerCase().includes(searchTerm) ||
+                    w.builder.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            renderWonders(filtered);
+        }
+        
+        function openModal(wonder) {
+            document.getElementById('modalImage').style.backgroundImage = `url('${wonder.image}')`;
+            document.getElementById('modalTitle').textContent = wonder.name;
+            document.getElementById('modalDescription').textContent = wonder.details;
+            
+            document.getElementById('modalInfo').innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">📍 ස්ථානය</div>
+                    <div class="info-value">${wonder.location}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">🏛️ වර්ගය</div>
+                    <div class="info-value">${wonder.type === 'new' ? 'නව පුදුම 7' : 'පුරාතන පුදුම'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">📅 නිර්මාණ වසර</div>
+                    <div class="info-value">${wonder.year}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">👷 නිර්මාණ ශිල්පියා/රජු</div>
+                    <div class="info-value">${wonder.builder}</div>
+                </div>
+            `;
+            
+            document.getElementById('modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', searchWonders);
+        
+        document.querySelector('.search-btn').addEventListener('click', searchWonders);
+        
+        // Close modal on outside click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
             }
         });
-
-        function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.style.position = 'fixed';
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
-            particle.style.width = '6px';
-            particle.style.height = '6px';
-            particle.style.background = 'rgba(255, 255, 255, 0.6)';
-            particle.style.borderRadius = '50%';
-            particle.style.pointerEvents = 'none';
-            particle.style.zIndex = '9999';
-            particle.style.animation = 'particleFloat 1s ease-out forwards';
-            
-            document.body.appendChild(particle);
-            
-            setTimeout(() => particle.remove(), 1000);
-        }
-
-        // Add particle animation style
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes particleFloat {
-                0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
-                100% { transform: translate(${Math.random()*100-50}px, ${Math.random()*100-50}px) scale(0); opacity: 0; }
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
             }
-        `;
-        document.head.appendChild(style);
+        });
+        
+        // Initial render
+        renderWonders(wonders);
     </script>
 </body>
-</html>
+</html>'''
+
+# Save to file
+with open('/mnt/kimi/output/world_wonders_search.html', 'w', encoding='utf-8') as f:
+    f.write(html_code)
+
+print("✅ වෙබ් අඩවිය සාර්ථකව සාදන ලදී!")
+print("📁 ගොනුව: /mnt/kimi/output/world_wonders_search.html")
+print("\nමෙම HTML ගොනුව ඔබට:")
+print("1. බ්‍රවුසරයෙන් විවෘත කර භාවිතා කළ හැකිය")
+print("2. වෙබ් සේවාදායකයකට (hosting) උඩුගත කළ හැකිය")
+print("3. GitHub Pages හරහා නොමිලේ ප්‍රසිද්ධ කළ හැකිය")
