@@ -1,0 +1,245 @@
+
+html_code = '''<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>වේලාව Theme Changer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        /* දවල් Theme */
+        body.day {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        /* රාත්‍රී Theme */
+        body.night {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .time-display {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .date-display {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .status {
+            font-size: 1.5em;
+            padding: 15px 30px;
+            border-radius: 50px;
+            margin: 20px 0;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        body.day .status {
+            background: rgba(255, 215, 0, 0.3);
+            border: 2px solid #ffd700;
+        }
+
+        body.night .status {
+            background: rgba(100, 149, 237, 0.3);
+            border: 2px solid #6495ed;
+        }
+
+        .icon {
+            font-size: 5em;
+            margin: 20px 0;
+        }
+
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .manual-toggle {
+            margin-top: 20px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        body.day .manual-toggle {
+            background: #ffd700;
+            color: #333;
+        }
+
+        body.night .manual-toggle {
+            background: #6495ed;
+            color: #fff;
+        }
+
+        .manual-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8em; }
+            .time-display { font-size: 2.5em; }
+            .date-display { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon" id="icon">☀️</div>
+        <h1>සුභ දවසක්!</h1>
+        <div class="time-display" id="time">00:00:00</div>
+        <div class="date-display" id="date">Loading...</div>
+        <div class="status" id="status">දවල්</div>
+        
+        <div class="info">
+            <p>🌍 <strong>ස්ථානය:</strong> ශ්‍රී ලංකාව (GMT+5:30)</p>
+            <p>🕐 <strong>වේලාව:</strong> <span id="localTime">Loading...</span></p>
+            <p>🌅 <strong>දවල්:</strong> 6:00 AM - 6:00 PM</p>
+            <p>🌙 <strong>රාත්‍රී:</strong> 6:00 PM - 6:00 AM</p>
+        </div>
+
+        <button class="manual-toggle" onclick="toggleTheme()">Theme එක මාරු කරන්න</button>
+    </div>
+
+    <script>
+        let isManual = false;
+        let manualTheme = null;
+
+        function updateTime() {
+            const now = new Date();
+            
+            // වේලාව format කිරීම
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // දිනය format කිරීම
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+            };
+            document.getElementById('date').textContent = now.toLocaleDateString('si-LK', options);
+            document.getElementById('localTime').textContent = now.toLocaleTimeString('si-LK');
+            
+            // Theme එක update කිරීම
+            if (!isManual) {
+                updateTheme(now.getHours());
+            }
+        }
+
+        function updateTheme(hour) {
+            const body = document.body;
+            const icon = document.getElementById('icon');
+            const status = document.getElementById('status');
+            const heading = document.querySelector('h1');
+            
+            // දවල් 6 AM - 6 PM
+            if (hour >= 6 && hour < 18) {
+                body.className = 'day';
+                icon.textContent = '☀️';
+                status.textContent = '🌅 දවල්';
+                heading.textContent = 'සුභ දවසක්!';
+            } else {
+                body.className = 'night';
+                icon.textContent = '🌙';
+                status.textContent = '🌙 රාත්‍රී';
+                heading.textContent = 'සුභ රාත්‍රියක්!';
+            }
+        }
+
+        function toggleTheme() {
+            isManual = !isManual;
+            const body = document.body;
+            const icon = document.getElementById('icon');
+            const status = document.getElementById('status');
+            const heading = document.querySelector('h1');
+            
+            if (isManual) {
+                // Manual toggle
+                if (body.className === 'day') {
+                    body.className = 'night';
+                    icon.textContent = '🌙';
+                    status.textContent = '🌙 රාත්‍රී (Manual)';
+                    heading.textContent = 'සුභ රාත්‍රියක්!';
+                } else {
+                    body.className = 'day';
+                    icon.textContent = '☀️';
+                    status.textContent = '🌅 දවල් (Manual)';
+                    heading.textContent = 'සුභ දවසක්!';
+                }
+            } else {
+                // Auto mode ට ආපසු යාම
+                updateTime();
+            }
+        }
+
+        // Initial call
+        updateTime();
+        
+        // සෑම තත්පරයකම update කිරීම
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>'''
+
+# Save to file
+with open('/mnt/kimi/output/time_theme_website.html', 'w', encoding='utf-8') as f:
+    f.write(html_code)
+
+print("✅ Website එක හදා ඉවරයි!")
+print("\n📁 File location: /mnt/kimi/output/time_theme_website.html")
+print("\n🎯 Features:")
+print("   • දවල් (6 AM - 6 PM): ලා නිල්/දම් පාට theme එක")
+print("   • රාත්‍රී (6 PM - 6 AM): තද නිල්/කළු theme එක")
+print("   • සජීවී වේලාව පෙන්වයි")
+print("   • සිංහල දිනය පෙන්වයි")
+print("   • Manual theme toggle button එකක්")
