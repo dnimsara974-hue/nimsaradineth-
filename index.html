@@ -1,426 +1,750 @@
 
-html_content = '''<!DOCTYPE html>
+# First, let's create a comprehensive Flask application for a cartoon and short films website
+# This will be a complete, working application structure
+
+app_code = '''
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
+from datetime import datetime
+import os
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key-here'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cartoon_cinema.db'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max file size
+
+db = SQLAlchemy(app)
+
+# Database Models
+class Video(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    category = db.Column(db.String(50), nullable=False)  # 'cartoon' or 'shortfilm'
+    thumbnail = db.Column(db.String(200))
+    video_file = db.Column(db.String(200), nullable=False)
+    upload_date = db.Column(db.DateTime, default=datetime.utcnow)
+    views = db.Column(db.Integer, default=0)
+    rating = db.Column(db.Float, default=0.0)
+    
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+
+# Routes
+@app.route('/')
+def home():
+    featured_cartoons = Video.query.filter_by(category='cartoon').order_by(Video.upload_date.desc()).limit(6).all()
+    featured_shortfilms = Video.query.filter_by(category='shortfilm').order_by(Video.upload_date.desc()).limit(6).all()
+    return render_template('index.html', cartoons=featured_cartoons, shortfilms=featured_shortfilms)
+
+@app.route('/cartoons')
+def cartoons():
+    page = request.args.get('page', 1, type=int)
+    cartoon_list = Video.query.filter_by(category='cartoon').order_by(Video.upload_date.desc()).paginate(page=page, per_page=12)
+    return render_template('category.html', videos=cartoon_list, title='Cartoons', category='cartoon')
+
+@app.route('/shortfilms')
+def shortfilms():
+    page = request.args.get('page', 1, type=int)
+    shortfilm_list = Video.query.filter_by(category='shortfilm').order_by(Video.upload_date.desc()).paginate(page=page, per_page=12)
+    return render_template('category.html', videos=shortfilm_list, title='Short Films', category='shortfilm')
+
+@app.route('/watch/<int:id>')
+def watch(id):
+    video = Video.query.get_or_404(id)
+    video.views += 1
+    db.session.commit()
+    related = Video.query.filter(Video.category == video.category, Video.id != id).limit(4).all()
+    return render_template('watch.html', video=video, related=related)
+
+@app.route('/search')
+def search():
+    query = request.args.get('q', '')
+    results = Video.query.filter(Video.title.contains(query) | Video.description.contains(query)).all()
+    return render_template('search.html', results=results, query=query)
+
+@app.route('/admin/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        title = request.form['title']
+        description = request.form['description']
+        category = request.form['category']
+        
+        thumbnail = request.files['thumbnail']
+        video_file = request.files['video']
+        
+        thumb_filename = secure_filename(thumbnail.filename)
+        video_filename = secure_filename(video_file.filename)
+        
+        thumbnail.save(os.path.join(app.config['UPLOAD_FOLDER'], 'thumbnails', thumb_filename))
+        video_file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'videos', video_filename))
+        
+        new_video = Video(
+            title=title,
+            description=description,
+            category=category,
+            thumbnail=f'uploads/thumbnails/{thumb_filename}',
+            video_file=f'uploads/videos/{video_filename}'
+        )
+        db.session.add(new_video)
+        db.session.commit()
+        flash('Video uploaded successfully!', 'success')
+        return redirect(url_for('home'))
+    
+    return render_template('upload.html')
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True, host='0.0.0.0', port=5000)
+'''
+
+# Create HTML templates
+html_templates = {
+    'base.html': '''<!DOCTYPE html>
 <html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova - AI Chat</title>
+    <title>{% block title %}Cartoon & Short Film Cinema{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Noto Sans Sinhala', sans-serif;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+            color: #fff;
+            min-height: 100vh;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #000000;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        /* Animated stars background */
-        .stars {
-            position: fixed;
+        nav {
+            background: rgba(0,0,0,0.8);
+            padding: 1rem 2rem;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
         }
-
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        /* Welcome text */
-        .welcome-container {
-            z-index: 10;
-            text-align: center;
-            margin-bottom: 40px;
-            animation: fadeIn 1.5s ease-out;
-        }
-
-        .welcome-text {
-            font-size: 4rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            animation: glow 2s ease-in-out infinite alternate;
         }
-
-        .subtitle {
-            color: #888;
-            font-size: 1.2rem;
-            margin-top: 20px;
-            letter-spacing: 4px;
-            opacity: 0.8;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
-            to { text-shadow: 0 0 40px rgba(240, 147, 251, 0.8), 0 0 60px rgba(102, 126, 234, 0.6); }
-        }
-
-        /* Chat container */
-        .chat-wrapper {
-            z-index: 10;
-            width: 90%;
-            max-width: 800px;
+        .nav-links {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
+            gap: 2rem;
+            list-style: none;
         }
-
-        /* Chat messages area */
-        .chat-messages {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        .nav-links a:hover { color: #feca57; }
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .search-box input {
+            padding: 0.5rem 1rem;
+            border: none;
             border-radius: 20px;
-            padding: 20px;
-            height: 400px;
-            overflow-y: auto;
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            width: 200px;
         }
-
-        .message {
-            max-width: 80%;
-            padding: 12px 18px;
-            border-radius: 18px;
-            animation: slideIn 0.3s ease-out;
-            word-wrap: break-word;
-        }
-
-        .message.user {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.bot {
-            background: rgba(255, 255, 255, 0.1);
-            color: #e0e0e0;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Chat input area */
-        .chat-input-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .chat-bar {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            padding: 8px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .chat-bar:focus-within {
-            border-color: #667eea;
-            box-shadow: 0 0 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .chat-input {
-            flex: 1;
-            background: transparent;
+        .search-box button {
+            padding: 0.5rem 1rem;
             border: none;
-            outline: none;
-            color: white;
-            font-size: 1.1rem;
-            padding: 15px 25px;
-            font-family: inherit;
-        }
-
-        .chat-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .send-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
+            border-radius: 20px;
+            background: #ff6b6b;
+            color: #fff;
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .search-box button:hover { transform: scale(1.05); }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b6b, transparent);
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .video-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+        }
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .video-card:hover .video-thumbnail img { transform: scale(1.1); }
+        .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,107,107,0.9);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            color: white;
-            font-size: 1.2rem;
-            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
-
-        .send-btn:hover {
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 0 25px rgba(102, 126, 234, 0.8);
+        .video-card:hover .play-btn { opacity: 1; }
+        .play-btn::after {
+            content: '▶';
+            font-size: 1.5rem;
+            color: #fff;
+            margin-left: 5px;
         }
-
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        .video-info {
+            padding: 1rem;
         }
-
-        .send-btn.spinning {
-            animation: spin 1s linear infinite;
+        .video-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .video-meta {
+            color: #aaa;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
         }
-
-        /* Loading indicator */
-        .typing-indicator {
-            display: none;
-            padding: 12px 18px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 18px;
-            align-self: flex-start;
-            color: #888;
-            font-style: italic;
+        .category-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
         }
-
-        .typing-indicator.active {
-            display: block;
-            animation: pulse 1.5s infinite;
+        .badge-cartoon { background: #ff6b6b; }
+        .badge-shortfilm { background: #48dbfb; }
+        footer {
+            background: rgba(0,0,0,0.8);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
-        }
-
-        /* Floating particles */
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(102, 126, 234, 0.6);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: float 10s infinite linear;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) translateX(0);
-                opacity: 0;
-            }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% {
-                transform: translateY(-100vh) translateX(100px);
-                opacity: 0;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .welcome-text {
-                font-size: 2.5rem;
-                letter-spacing: 4px;
-            }
-            .subtitle {
-                font-size: 1rem;
-            }
-            .chat-messages {
-                height: 300px;
-            }
-        }
+        {% block extra_css %}{% endblock %}
     </style>
 </head>
 <body>
-    <!-- Animated stars -->
-    <div class="stars" id="stars"></div>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🎬 CartoonCinema</div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">මුල් පිටුව</a></li>
+                <li><a href="{{ url_for('cartoons') }}">කාටූන්</a></li>
+                <li><a href="{{ url_for('shortfilms') }}">කෙටි චිත්‍රපට</a></li>
+                <li><a href="{{ url_for('upload') }}">එකතු කරන්න</a></li>
+            </ul>
+            <form class="search-box" action="{{ url_for('search') }}">
+                <input type="text" name="q" placeholder="සොයන්න...">
+                <button type="submit">සොයන්න</button>
+            </form>
+        </div>
+    </nav>
     
-    <!-- Floating particles -->
-    <div id="particles"></div>
-
-    <!-- Welcome text -->
-    <div class="welcome-container">
-        <h1 class="welcome-text">Welcome to Nova</h1>
-        <p class="subtitle">Your AI Companion</p>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
     </div>
+    
+    <footer>
+        <p>&copy; 2026 CartoonCinema. සියලුම හිමිකම් ඇවිරිණි.</p>
+    </footer>
+</body>
+</html>''',
 
-    <!-- Chat area -->
-    <div class="chat-wrapper">
-        <div class="chat-messages" id="chatMessages">
-            <!-- Messages will appear here -->
-        </div>
-        <div class="typing-indicator" id="typingIndicator">
-            Nova is typing...
-        </div>
-        <div class="chat-input-container">
-            <div class="chat-bar" id="chatBar">
-                <input type="text" class="chat-input" id="chatInput" placeholder="Type your message here..." autocomplete="off">
-                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                </button>
+    'index.html': '''{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section" style="text-align: center; padding: 3rem 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; margin-bottom: 3rem;">
+    <h1 style="font-size: 3rem; margin-bottom: 1rem;">සාදරයෙන් පිළිගනිමු! 🎭</h1>
+    <p style="font-size: 1.2rem; opacity: 0.9;">ඔබේ ප්‍රියතම කාටූන් සහ කෙටි චිත්‍රපට නරඹන්න</p>
+</div>
+
+<h2 class="section-title">
+    <span class="category-badge badge-cartoon">කාටූන්</span>
+    නවතම කාටූන්
+</h2>
+<div class="video-grid">
+    {% for video in cartoons %}
+    <a href="{{ url_for('watch', id=video.id) }}" style="text-decoration: none; color: inherit;">
+        <div class="video-card">
+            <div class="video-thumbnail">
+                <img src="{{ url_for('static', filename=video.thumbnail) }}" alt="{{ video.title }}">
+                <div class="play-btn"></div>
+            </div>
+            <div class="video-info">
+                <h3 class="video-title">{{ video.title }}</h3>
+                <div class="video-meta">
+                    <span>{{ video.views }} views</span>
+                    <span>{{ video.upload_date.strftime('%Y-%m-%d') }}</span>
+                </div>
             </div>
         </div>
+    </a>
+    {% endfor %}
+</div>
+
+<h2 class="section-title">
+    <span class="category-badge badge-shortfilm">කෙටි චිත්‍රපට</span>
+    නවතම කෙටි චිත්‍රපට
+</h2>
+<div class="video-grid">
+    {% for video in shortfilms %}
+    <a href="{{ url_for('watch', id=video.id) }}" style="text-decoration: none; color: inherit;">
+        <div class="video-card">
+            <div class="video-thumbnail">
+                <img src="{{ url_for('static', filename=video.thumbnail) }}" alt="{{ video.title }}">
+                <div class="play-btn"></div>
+            </div>
+            <div class="video-info">
+                <h3 class="video-title">{{ video.title }}</h3>
+                <div class="video-meta">
+                    <span>{{ video.views }} views</span>
+                    <span>{{ video.upload_date.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}''',
+
+    'category.html': '''{% extends "base.html" %}
+
+{% block title %}{{ title }} - CartoonCinema{% endblock %}
+
+{% block content %}
+<h1 class="section-title">{{ title }}</h1>
+
+<div class="video-grid">
+    {% for video in videos.items %}
+    <a href="{{ url_for('watch', id=video.id) }}" style="text-decoration: none; color: inherit;">
+        <div class="video-card">
+            <div class="video-thumbnail">
+                <img src="{{ url_for('static', filename=video.thumbnail) }}" alt="{{ video.title }}">
+                <div class="play-btn"></div>
+            </div>
+            <div class="video-info">
+                <h3 class="video-title">{{ video.title }}</h3>
+                <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 0.5rem; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ video.description }}</p>
+                <div class="video-meta">
+                    <span>{{ video.views }} views</span>
+                    <span>{{ video.upload_date.strftime('%Y-%m-%d') }}</span>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+<div class="pagination" style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+    {% if videos.has_prev %}
+        <a href="{{ url_for(category + 's', page=videos.prev_num) }}" style="padding: 0.5rem 1rem; background: #ff6b6b; color: #fff; text-decoration: none; border-radius: 5px;">← පෙර</a>
+    {% endif %}
+    
+    {% for page_num in videos.iter_pages() %}
+        {% if page_num %}
+            {% if page_num != videos.page %}
+                <a href="{{ url_for(category + 's', page=page_num) }}" style="padding: 0.5rem 1rem; background: rgba(255,255,255,0.1); color: #fff; text-decoration: none; border-radius: 5px;">{{ page_num }}</a>
+            {% else %}
+                <span style="padding: 0.5rem 1rem; background: #ff6b6b; color: #fff; border-radius: 5px;">{{ page_num }}</span>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    
+    {% if videos.has_next %}
+        <a href="{{ url_for(category + 's', page=videos.next_num) }}" style="padding: 0.5rem 1rem; background: #ff6b6b; color: #fff; text-decoration: none; border-radius: 5px;">ඊළඟ →</a>
+    {% endif %}
+</div>
+{% endblock %}''',
+
+    'watch.html': '''{% extends "base.html" %}
+
+{% block title %}{{ video.title }} - CartoonCinema{% endblock %}
+
+{% block extra_css %}
+<style>
+    .video-player-container {
+        background: #000;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    .video-player {
+        width: 100%;
+        max-height: 70vh;
+    }
+    .video-details {
+        background: rgba(255,255,255,0.05);
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+    .video-details h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    .video-stats {
+        display: flex;
+        gap: 2rem;
+        color: #aaa;
+        margin-bottom: 1rem;
+    }
+    .video-description {
+        line-height: 1.6;
+        color: #ccc;
+    }
+    .related-section {
+        margin-top: 3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="video-player-container">
+    <video class="video-player" controls poster="{{ url_for('static', filename=video.thumbnail) }}">
+        <source src="{{ url_for('static', filename=video.video_file) }}" type="video/mp4">
+        ඔබේ browser එක video element එක සහාය නොදක්වයි.
+    </video>
+</div>
+
+<div class="video-details">
+    <h1>{{ video.title }}</h1>
+    <div class="video-stats">
+        <span>{{ video.views }} views</span>
+        <span>{{ video.upload_date.strftime('%Y-%m-%d') }}</span>
+        <span class="category-badge badge-{{ video.category }}">{{ video.category }}</span>
     </div>
+    <p class="video-description">{{ video.description }}</p>
+</div>
 
-    <script>
-        // Create stars
-        const starsContainer = document.getElementById('stars');
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            star.style.opacity = Math.random();
-            starsContainer.appendChild(star);
-        }
+<div class="related-section">
+    <h2 class="section-title">අදාළ වීඩියෝ</h2>
+    <div class="video-grid">
+        {% for rel_video in related %}
+        <a href="{{ url_for('watch', id=rel_video.id) }}" style="text-decoration: none; color: inherit;">
+            <div class="video-card">
+                <div class="video-thumbnail">
+                    <img src="{{ url_for('static', filename=rel_video.thumbnail) }}" alt="{{ rel_video.title }}">
+                    <div class="play-btn"></div>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">{{ rel_video.title }}</h3>
+                    <div class="video-meta">
+                        <span>{{ rel_video.views }} views</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}''',
 
-        // Create floating particles
-        const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 20; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 10 + 's';
-            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
-            particlesContainer.appendChild(particle);
-        }
+    'upload.html': '''{% extends "base.html" %}
 
-        // Chat functionality
-        const chatInput = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const chatMessages = document.getElementById('chatMessages');
-        const typingIndicator = document.getElementById('typingIndicator');
+{% block title %}Upload Video - CartoonCinema{% endblock %}
 
-        // API Configuration - REPLACE WITH YOUR API KEY
-        const API_KEY = 'YOUR_API_KEY_HERE';
-        const API_URL = 'https://api.openai.com/v1/chat/completions';
+{% block extra_css %}
+<style>
+    .upload-form {
+        max-width: 800px;
+        margin: 0 auto;
+        background: rgba(255,255,255,0.05);
+        padding: 3rem;
+        border-radius: 20px;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #feca57;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        background: rgba(0,0,0,0.3);
+        color: #fff;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #ff6b6b;
+    }
+    .form-group input[type="file"] {
+        padding: 0.5rem;
+    }
+    .submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(45deg, #ff6b6b, #feca57);
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(255,107,107,0.4);
+    }
+</style>
+{% endblock %}
 
-        async function sendMessage() {
-            const message = chatInput.value.trim();
-            if (!message) return;
+{% block content %}
+<div class="upload-form">
+    <h1 style="text-align: center; margin-bottom: 2rem; font-size: 2.5rem;">නව වීඩියෝ එකතු කරන්න 🎥</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">වීඩියෝවේ නම</label>
+            <input type="text" id="title" name="title" required placeholder="වීඩියෝවේ මාතෘකාව ඇතුළත් කරන්න">
+        </div>
+        
+        <div class="form-group">
+            <label for="description">විස්තරය</label>
+            <textarea id="description" name="description" rows="4" placeholder="වීඩියෝව ගැන කෙටි විස්තරයක්..."></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="category">වර්ගය</label>
+            <select id="category" name="category" required>
+                <option value="">වර්ගය තෝරන්න</option>
+                <option value="cartoon">කාටූන්</option>
+                <option value="shortfilm">කෙටි චිත්‍රපට</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="thumbnail">Thumbnail රූපය</label>
+            <input type="file" id="thumbnail" name="thumbnail" accept="image/*" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="video">වීඩියෝ ගොනුව</label>
+            <input type="file" id="video" name="video" accept="video/*" required>
+        </div>
+        
+        <button type="submit" class="submit-btn">එකතු කරන්න 🚀</button>
+    </form>
+</div>
+{% endblock %}''',
 
-            // Add user message
-            addMessage(message, 'user');
-            chatInput.value = '';
-            
-            // Show typing indicator
-            typingIndicator.classList.add('active');
-            sendBtn.disabled = true;
-            sendBtn.classList.add('spinning');
+    'search.html': '''{% extends "base.html" %}
 
-            try {
-                // Call OpenAI API
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: 'gpt-3.5-turbo',
-                        messages: [{ role: 'user', content: message }],
-                        max_tokens: 150
-                    })
-                });
+{% block title %}Search Results - CartoonCinema{% endblock %}
 
-                const data = await response.json();
-                const botResponse = data.choices[0].message.content;
-                
-                // Hide typing indicator and show response
-                typingIndicator.classList.remove('active');
-                AddMessage(botResponse, 'bot');
-                
-            } catch (error) {
-                console.error('Error:', error);
-                typingIndicator.classList.remove('active');
-                AddMessage('Sorry, I encountered an error. Please check your API key and try again.', 'bot');
-            } finally {
-                sendBtn.disabled = false;
-                sendBtn.classList.remove('spinning');
-            }
-        }
+{% block content %}
+<h1 class="section-title">"{{ query }}" සඳහා සෙවුම් ප්‍රතිඵල</h1>
 
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+{% if results %}
+    <div class="video-grid">
+        {% for video in results %}
+        <a href="{{ url_for('watch', id=video.id) }}" style="text-decoration: none; color: inherit;">
+            <div class="video-card">
+                <div class="video-thumbnail">
+                    <img src="{{ url_for('static', filename=video.thumbnail) }}" alt="{{ video.title }}">
+                    <div class="play-btn"></div>
+                </div>
+                <div class="video-info">
+                    <h3 class="video-title">{{ video.title }}</h3>
+                    <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 0.5rem;">{{ video.description[:100] }}...</p>
+                    <div class="video-meta">
+                        <span class="category-badge badge-{{ video.category }}">{{ video.category }}</span>
+                        <span>{{ video.views }} views</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div style="text-align: center; padding: 4rem;">
+        <h2 style="font-size: 3rem; margin-bottom: 1rem;">😕</h2>
+        <p style="font-size: 1.2rem; color: #aaa;">"{{ query }}" සඳහා ප්‍රතිඵල කිසිවක් හමු නොවීය.</p>
+        <a href="{{ url_for('home') }}" style="display: inline-block; margin-top: 1rem; padding: 0.8rem 2rem; background: #ff6b6b; color: #fff; text-decoration: none; border-radius: 25px;">මුල් පිටුවට යන්න</a>
+    </div>
+{% endif %}
+{% endblock %}'''
+}
 
-        // Enter key support
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
+# Create requirements.txt
+requirements = '''Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Werkzeug==2.3.7
+'''
 
-        // Auto-focus on load
-        if (window.innerWidth > 768) {
-            setTimeout(() => chatInput.focus(), 1000);
-        }
-    </script>
-</body>
-</html>'''
+# Create folder structure setup script
+setup_script = '''#!/bin/bash
+# Setup script for Cartoon Cinema website
 
-with open('/mnt/kimi/output/nova_ai_chat.html', 'w', encoding='utf-8') as f:
-    f.write(html_content)
+echo "Setting up Cartoon Cinema Website..."
 
-print("✅ Nova AI Chatbot Website Created Successfully!")
-print("\n📁 File saved to: /mnt/kimi/output/nova_ai_chat.html")
-print("\n🌟 Features:")
-print("   • Black background with animated stars")
-print("   • 'Welcome to Nova' gradient text")
-print("   • Full chat interface with user/bot messages bubbles")
-print("   • OpenAI API integration (requires API key)")
-print("   • Typing indicator animation")
-print("   • Glassmorphism design with blur effects")
-print("   • Floating particles animation")
-print("   • Mobile responsive design")
-print("   • Touch/click ripple effects")
-print("\n⚠️  IMPORTANT: Replace 'YOUR_API_KEY_HERE' with your actual OpenAI API key")
+# Create directories
+mkdir -p static/uploads/thumbnails
+mkdir -p static/uploads/videos
+mkdir -p templates
+
+# Create files
+echo "Creating app.py..."
+cat > app.py << 'EOF'
+''' + app_code + '''
+EOF
+
+echo "Creating HTML templates..."
+'''
+
+for filename, content in html_templates.items():
+    setup_script += f'''
+cat > templates/{filename} << 'EOF'
+{content}
+EOF
+'''
+
+setup_script += f'''
+echo "Creating requirements.txt..."
+cat > requirements.txt << 'EOF'
+{requirements}
+EOF
+
+echo "Installing dependencies..."
+pip install -r requirements.txt
+
+echo "Setup complete! Run 'python app.py' to start the server."
+'''
+
+# Save the setup script
+with open('/mnt/agents/output/setup_cartoon_cinema.sh', 'w', encoding='utf-8') as f:
+    f.write(setup_script)
+
+# Also create a Python setup script for Windows users
+setup_py = '''import os
+import shutil
+
+def setup_project():
+    print("Setting up Cartoon Cinema Website...")
+    
+    # Create directories
+    dirs = [
+        'static/uploads/thumbnails',
+        'static/uploads/videos',
+        'templates'
+    ]
+    
+    for d in dirs:
+        os.makedirs(d, exist_ok=True)
+        print(f"Created: {d}")
+    
+    # Write app.py
+    with open('app.py', 'w', encoding='utf-8') as f:
+        f.write(app_code)
+    print("Created: app.py")
+    
+    # Write templates
+    for filename, content in html_templates.items():
+        with open(f'templates/{filename}', 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f"Created: templates/{filename}")
+    
+    # Write requirements.txt
+    with open('requirements.txt', 'w', encoding='utf-8') as f:
+        f.write(requirements)
+    print("Created: requirements.txt")
+    
+    print("\\nSetup complete!")
+    print("1. Install dependencies: pip install -r requirements.txt")
+    print("2. Run the app: python app.py")
+    print("3. Open browser: http://localhost:5000")
+
+if __name__ == '__main__':
+    setup_project()
+'''
+
+with open('/mnt/agents/output/setup.py', 'w', encoding='utf-8') as f:
+    f.write(setup_py)
+
+print("✅ Setup files created successfully!")
+print("\n📁 Generated files:")
+print("1. setup_cartoon_cinema.sh - Linux/Mac setup script")
+print("2. setup.py - Python setup script (cross-platform)")
+print("\n🚀 To set up the project:")
+print("Option 1 (Linux/Mac): bash setup_cartoon_cinema.sh")
+print("Option 2 (Any OS): python setup.py")
